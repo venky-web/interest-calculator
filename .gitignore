@@ -68,3 +68,9 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Android build
+/android
+
+# Package-lock.json
+package-lock.json

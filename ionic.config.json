@@ -1,5 +1,7 @@
 {
   "name": "interest-calculator",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }
