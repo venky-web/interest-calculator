@@ -1,0 +1,6 @@
+/* Common CSS For the App */
+
+.error-text {
+  color: var(--ion-color-danger);
+  font-size: 0.85rem;
+}
