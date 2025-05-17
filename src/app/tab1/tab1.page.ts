@@ -47,16 +47,6 @@ export class Tab1Page implements OnInit {
         }
       }
     );
-    this.formValue = this.calculatorForm.value;
-    this.interestResult = calculateInterestWithDuration({
-      principal: 50000,
-      rate: 12,
-      startDate: new Date('2022-01-01'),
-      endDate: new Date('2024-05-16'),
-      interestType: 'compound',
-      compoundFrequency: 'half-yearly',
-    });
-
   }
 
   createForm() {

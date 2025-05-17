@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>
       Interest Calculator
     </ion-title>
@@ -162,52 +162,52 @@
     </div>
   </form>
   <ng-container *ngIf="interestResult">
-    <section class="interest-result">
-      <div>
-        <p>Principal Amount</p>
-        <p>:</p>
-        <p>{{ formValue.principal | appCurrency }} </p>
-      </div>
-      <div>
-        <p>Interest Rate</p>
-        <p>:</p>
-        <p>{{ formValue.interestRate }} {{ formValue.interestType }}</p>
-      </div>
-      <div>
-        <p>Total Duration</p>
-        <p>:</p>
-        <p>{{ interestResult.duration.totalStr }}</p>
-      </div>
-      <div>
-        <p>Total Interest</p>
-        <p>:</p>
-        <p>{{ interestResult.interestBreakdown.interestTotal | appCurrency }}</p>
-      </div>
-      <!-- <div>
-        <p>Interest per Month</p>
-        <p>:</p>
-        <p>{{ interestResult.interestBreakdown.interestPerMonth | appCurrency }}</p>
-      </div> -->
-      <div>
-        <p>Interest per Day</p>
-        <p>:</p>
-        <p>{{ interestResult.interestBreakdown.interestPerDay | appCurrency }}</p>
-      </div>
-      <div class="total-amount">
-        <p>Total Amount</p>
-        <p>:</p>
-        <p>{{ interestResult.totalAmount | appCurrency }}</p>
-      </div>
-      <div class="ion-margin-bottom save-btn-section">
-        <ion-button color="primary" expand="block" (click)="onClickSave()">Save</ion-button>
-      </div>
-      <div class="disclaimer-section">
-        <p>* Calculations are made based on our personal understanding only. It may not be the same as banks.</p>
-      </div>
-    </section>
+    <ng-template [ngTemplateOutlet]="interestResultTemplate"></ng-template>
   </ng-container>
 </ion-content>
 
-<ng-template #fieldRequiredErrorTemplate>
-  <p >This field is required</p>
+<ng-template #interestResultTemplate>
+  <section class="interest-result">
+    <div>
+      <p>Principal Amount</p>
+      <p>:</p>
+      <p>{{ formValue.principal | appCurrency }} </p>
+    </div>
+    <div>
+      <p>Interest Rate</p>
+      <p>:</p>
+      <p>{{ formValue.interestRate }} {{ formValue.interestType }}</p>
+    </div>
+    <div>
+      <p>Total Duration</p>
+      <p>:</p>
+      <p>{{ interestResult.duration.totalStr }}</p>
+    </div>
+    <div>
+      <p>Total Interest</p>
+      <p>:</p>
+      <p>{{ interestResult.interestBreakdown.interestTotal | appCurrency }}</p>
+    </div>
+    <!-- <div>
+      <p>Interest per Month</p>
+      <p>:</p>
+      <p>{{ interestResult.interestBreakdown.interestPerMonth | appCurrency }}</p>
+    </div> -->
+    <div>
+      <p>Interest per Day</p>
+      <p>:</p>
+      <p>{{ interestResult.interestBreakdown.interestPerDay | appCurrency }}</p>
+    </div>
+    <div class="total-amount">
+      <p>Total Amount</p>
+      <p>:</p>
+      <p>{{ interestResult.totalAmount | appCurrency }}</p>
+    </div>
+    <div class="ion-margin-bottom save-btn-section">
+      <ion-button color="primary" expand="block" (click)="onClickSave()">Save</ion-button>
+    </div>
+    <div class="disclaimer-section">
+      <p>* Calculations are made based on our personal understanding only. It may not be the same as banks.</p>
+    </div>
+  </section>
 </ng-template>

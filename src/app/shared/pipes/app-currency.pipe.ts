@@ -11,18 +11,31 @@ export class AppCurrencyPipe implements PipeTransform {
     };
 
     const amount = Number(value).toFixed(2);
+    let formatted = '';
+    let suffix = '';
 
-    // Split integer and decimal
-    const [integerPart, decimalPart] = amount.split('.');
-    let lastThree = integerPart.slice(-3);
-    let otherNumbers = integerPart.slice(0, -3);
+    if (Number(amount) >= 1_00_00_000 || Number(amount) <= -1_00_00_000) {
+      // Crores
+      formatted = (Number(amount) / 1_00_00_000).toFixed(2);
+      suffix = ' Cr';
+    } else if (Number(amount) >= 1_00_000 || Number(amount) <= -1_00_000) {
+      // Lakhs
+      formatted = (Number(amount) / 1_00_000).toFixed(2);
+      suffix = ' L';
+    } else {
+      // Standard Indian comma formatting
+      const [intPart, decimalPart] = amount.split('.');
+      let lastThree = intPart.slice(-3);
+      let otherNumbers = intPart.slice(0, -3);
 
-    if (otherNumbers !== '') {
-      lastThree = ',' + lastThree;
+      if (otherNumbers !== '') {
+        lastThree = ',' + lastThree;
+      }
+
+      const formattedInt = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+      formatted = `${formattedInt}.${decimalPart}`;
     }
 
-    const formattedInteger = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
-
-    return `₹ ${formattedInteger}.${decimalPart}`;
+    return `₹ ${formatted}${suffix}`;
   }
 }
