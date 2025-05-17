@@ -5,6 +5,11 @@
 </ion-header>
 
 <ion-content class="ion-padding" color="light" [fullscreen]="true">
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed" (click)="onClickAddRecord()">
+    <ion-fab-button>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
   <ion-grid class="main-grid ion-margin-bottom" [fixed]="true" size-md="12" size-lg="8" offset-lg="2">
     <ion-row>
       <ion-col>
@@ -53,7 +58,7 @@
         <span>{{ data.name }}</span>
       </ion-col>
       <ion-col>
-        <ion-button size="small" fill="outline" color="medium" class="ion-no-margin">
+        <ion-button size="small" fill="outline" color="medium" class="ion-no-margin" (click)="onClickMenu($event, data)">
           <ion-icon name="menu-outline" slot="icon-only"></ion-icon>
         </ion-button>
       </ion-col>

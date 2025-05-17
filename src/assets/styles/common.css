@@ -4,3 +4,11 @@
   color: var(--ion-color-danger);
   font-size: 0.85rem;
 }
+
+.ion-text-danger {
+  color: var(--ion-color-danger) !important;
+}
+
+.ion-text-medium {
+  color: var(--ion-color-medium) !important;
+}

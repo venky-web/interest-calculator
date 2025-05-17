@@ -1,22 +1,24 @@
-import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Tab2Page } from './tab2.page';
-import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { IonicModule } from '@ionic/angular';
+
+import { Tab2Page } from './tab2.page';
 import { Tab2PageRoutingModule } from './tab2-routing.module';
 import { AppCurrencyPipe } from '../shared/pipes/app-currency.pipe';
+import { MenuOptionsComponent } from './menu-options/menu-options.component';
+import { AddRecordComponent } from './add-record/add-record.component';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     FormsModule,
-    ExploreContainerComponentModule,
+    ReactiveFormsModule,
     Tab2PageRoutingModule,
     AppCurrencyPipe
   ],
-  declarations: [Tab2Page]
+  declarations: [Tab2Page, AddRecordComponent, MenuOptionsComponent]
 })
 export class Tab2PageModule {}

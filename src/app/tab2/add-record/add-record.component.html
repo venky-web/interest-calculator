@@ -1,0 +1,270 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Add Record</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onClickCancel()">
+        <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="recordForm" class="ion-padding">
+    <div class="ion-margin-bottom">
+      <ion-radio-group name="recordType" formControlName="recordType">
+        <ion-radio value="lend" labelPlacement="end" justify="start"
+          >Lend</ion-radio
+        >
+        <ion-radio value="borrow" labelPlacement="end" justify="start"
+          >Borrow</ion-radio
+        >
+      </ion-radio-group>
+    </div>
+    <div class="ion-margin-bottom">
+      <label for="name"
+        >{{
+          formCtrls["recordType"].value === "lend" ? "Lender" : "Borrower"
+        }}
+        Name</label
+      >
+      <ion-input
+        aria-label="Name"
+        name="name"
+        formControlName="name"
+        fill="outline"
+        type="number"
+        placeholder="Enter name"
+        [clearInput]="true"
+      ></ion-input>
+      <ng-container
+        *ngIf="
+          formCtrls['name'].errors &&
+          (formCtrls['name'].touched || formCtrls['name'].dirty)
+        "
+      >
+        <ng-template [ngTemplateOutlet]="nameErrorTemplate"></ng-template>
+      </ng-container>
+    </div>
+    <div class="ion-margin-bottom">
+      <label for="principal">Principal Amount</label>
+      <ion-input
+        aria-label="Principal Amount"
+        name="principal"
+        formControlName="principal"
+        fill="outline"
+        type="number"
+        placeholder="Enter principal amount"
+        [clearInput]="true"
+      ></ion-input>
+      <ng-container
+        *ngIf="
+          formCtrls['principal'].errors &&
+          (formCtrls['principal'].touched || formCtrls['principal'].dirty)
+        "
+      >
+        <ng-template [ngTemplateOutlet]="principalErrorTemplate"></ng-template>
+      </ng-container>
+    </div>
+    <div class="ion-margin-bottom">
+      <label for="interestType">Interest Type</label>
+      <ion-radio-group
+        class="radio-group"
+        name="interestType"
+        formControlName="interestType"
+      >
+        <ion-radio value="rupees" labelPlacement="end" justify="start"
+          >Rupees (&#8377;)</ion-radio
+        >
+        <ion-radio value="percentage" labelPlacement="end" justify="start"
+          >Percentage (&#x25;)</ion-radio
+        >
+      </ion-radio-group>
+    </div>
+    <div class="ion-margin-bottom">
+      <label for="interestRate">Interest Rate</label>
+      <ion-input
+        aria-label="Principal Amount"
+        name="interestRate"
+        formControlName="interestRate"
+        fill="outline"
+        type="number"
+        placeholder="Enter interest rate"
+        [clearInput]="true"
+      ></ion-input>
+      <ng-container
+        *ngIf="
+          formCtrls['interestRate'].errors &&
+          (formCtrls['interestRate'].touched || formCtrls['interestRate'].dirty)
+        "
+      >
+        <ng-template
+          [ngTemplateOutlet]="interestRateErrorTemplate"
+        ></ng-template>
+      </ng-container>
+    </div>
+    <div
+      class="ion-margin-bottom d-flex justify-content-between align-items-center"
+    >
+      <label for="fromDate">From Date</label>
+      <ion-datetime-button datetime="fromDatePicker"></ion-datetime-button>
+      <ion-modal [keepContentsMounted]="true" #fromDateModal>
+        <ng-template>
+          <ion-datetime
+            id="fromDatePicker"
+            name="fromDate"
+            formControlName="fromDate"
+            presentation="date"
+            display-format="DD/MM/YYYY"
+            (ionChange)="onDateChange(fromDateModal)"
+          ></ion-datetime>
+        </ng-template>
+      </ion-modal>
+      <ng-container
+        *ngIf="
+          formCtrls['fromDate'].errors &&
+          (formCtrls['fromDate'].touched || formCtrls['fromDate'].dirty)
+        "
+      >
+        <p
+          class="error-text mt-0"
+          *ngIf="formCtrls['fromDate'].errors['required']"
+        >
+          From-Date is required
+        </p>
+      </ng-container>
+      <ng-container *ngIf="invalidDatesError">
+        <p class="error-text mt-0">From-Date cannot be greater than To-Date</p>
+      </ng-container>
+    </div>
+    <div class="ion-margin-bottom">
+      <ion-radio-group name="calculationType" formControlName="calculationType">
+        <ion-radio value="simple" labelPlacement="end" justify="start"
+          >Simple Interest</ion-radio
+        >
+        <ion-radio value="compound" labelPlacement="end" justify="start"
+          >Compound Interest</ion-radio
+        >
+      </ion-radio-group>
+    </div>
+    <ng-container *ngIf="formCtrls['interval']">
+      <div class="ion-margin-bottom">
+        <ion-select
+          label="Compound Interval"
+          name="interval"
+          formControlName="interval"
+          interface="action-sheet"
+          placeholder="Select an option"
+          cancelText="Cancel"
+          fill="outline"
+        >
+          <ion-select-option value="yearly">Yearly</ion-select-option>
+          <ion-select-option value="halfYearly">Half-Yearly</ion-select-option>
+          <ion-select-option value="quarterly">Quarterly</ion-select-option>
+          <ion-select-option value="monthly">Monthly</ion-select-option>
+        </ion-select>
+        <ng-container
+          *ngIf="
+            formCtrls['interval'].errors &&
+            (formCtrls['interval'].touched || formCtrls['interval'].dirty)
+          "
+        >
+          <p
+            class="error-text mt-0"
+            *ngIf="formCtrls['interval'].errors['required']"
+          >
+            This field is required
+          </p>
+        </ng-container>
+      </div>
+    </ng-container>
+    <div class="ion-margin-bottom">
+      <label for="mobileNumber">Mobile Number</label>
+      <ion-input
+        aria-label="Mobile Number"
+        name="mobileNumber"
+        formControlName="mobileNumber"
+        fill="outline"
+        type="number"
+        placeholder="Enter mobileNumber"
+        [clearInput]="true"
+      ></ion-input>
+      <ng-container
+        *ngIf="
+          formCtrls['mobileNumber'].errors &&
+          (formCtrls['mobileNumber'].touched || formCtrls['mobileNumber'].dirty)
+        "
+      >
+        <ng-template [ngTemplateOutlet]="mobileErrorTemplate"></ng-template>
+      </ng-container>
+    </div>
+    <div class="ion-margin-bottom">
+      <label for="notes">Notes</label>
+      <ion-textarea
+        aria-label="Notes"
+        name="notes"
+        formControlName="notes"
+        fill="outline"
+        placeholder="Enter something"
+      ></ion-textarea>
+      <ng-container
+        *ngIf="
+          formCtrls['notes'].errors &&
+          (formCtrls['notes'].touched || formCtrls['notes'].dirty)
+        "
+      >
+        <p
+          class="error-text mt-0"
+          *ngIf="formCtrls['interval'].errors['required']"
+        >
+          Should be less than or equal to 250 characters.
+        </p>
+      </ng-container>
+    </div>
+    <div
+      class="ion-margin-bottom d-flex justify-content-around align-items-center"
+    >
+      <ion-button color="light" (click)="onClickCancel()">Cancel</ion-button>
+      <ion-button color="primary" (click)="onClickCalculate()">Save</ion-button>
+    </div>
+  </form>
+</ion-content>
+
+<ng-template #interestRateErrorTemplate>
+  <p class="error-text mt-0" *ngIf="formCtrls['interestRate'].errors['max']">
+    Should be less than or equal to 100
+  </p>
+  <p class="error-text mt-0" *ngIf="formCtrls['interestRate'].errors['required']">
+    This field is required
+  </p>
+</ng-template>
+
+<ng-template #nameErrorTemplate>
+  <p class="error-text mt-0" *ngIf="formCtrls['name'].errors['maxlength']">
+    Should be less than or equal to 50 characters
+  </p>
+  <p class="error-text mt-0" *ngIf="formCtrls['name'].errors['required']">
+    This field is required
+  </p>
+  <p class="error-text mt-0" *ngIf="formCtrls['name'].errors['pattern']">
+    Invalid name.
+  </p>
+</ng-template>
+
+<ng-template #principalErrorTemplate>
+  <p class="error-text mt-0" *ngIf="formCtrls['principal'].errors['max']">
+    Should be less than or equal to 13 characters
+  </p>
+  <p class="error-text mt-0" *ngIf="formCtrls['principal'].errors['required']">
+    This field is required
+  </p>
+</ng-template>
+
+<ng-template #mobileErrorTemplate>
+  <p
+    class="error-text mt-0"
+    *ngIf="formCtrls['mobileNumber'].errors['pattern']"
+  >
+    Invalid mobile number.
+  </p>
+</ng-template>
