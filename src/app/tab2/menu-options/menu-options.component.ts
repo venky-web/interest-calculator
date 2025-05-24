@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 
-import { PopoverController } from '@ionic/angular';
+import { IonicModule, PopoverController } from '@ionic/angular';
 
 @Component({
   selector: 'app-menu-options',
@@ -28,6 +29,11 @@ import { PopoverController } from '@ionic/angular';
         }
       }
     `
+  ],
+  standalone: true,
+   imports: [
+    IonicModule,
+    CommonModule,
   ],
 })
 export class MenuOptionsComponent {

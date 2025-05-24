@@ -19,3 +19,17 @@ export interface IBookRecord {
   months?: number;
   days?: number;
 }
+
+export interface ISavedRecord extends IBookRecord {
+  tenureType: string;
+}
+
+export interface IBookSummary {
+  netAmount: number;
+  totalLent: number;
+  totalLentInterest: number;
+  totalLentItems: number;
+  totalBorrowed: number;
+  totalBorrowedInterest: number;
+  totalBorrowedItems: number;
+}

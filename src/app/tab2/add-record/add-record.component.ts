@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { IonModal, ModalController } from '@ionic/angular';
+
+import { IBookRecord } from 'src/app/shared/modals/interest-book';
 
 @Component({
   selector: 'app-add-record',
@@ -10,6 +12,8 @@ import { IonModal, ModalController } from '@ionic/angular';
 })
 export class AddRecordComponent  implements OnInit {
   //
+  @Input() editRecord: IBookRecord;
+
   recordForm: FormGroup;
 
   invalidDatesError: boolean;
@@ -20,8 +24,12 @@ export class AddRecordComponent  implements OnInit {
 
   ngOnInit() {
     this.createRecordForm();
+    if (this.editRecord) {
+      this.patchForm();
+    }
     this.recordForm.controls['calculationType'].valueChanges.subscribe(
       (value: string) => {
+        console.log(value);
         if (value === 'compound') {
           const ctrl = new FormControl('yearly', {
             updateOn: 'blur',
@@ -78,6 +86,27 @@ export class AddRecordComponent  implements OnInit {
 
   get formCtrls() {
     return this.recordForm.controls;
+  }
+
+  patchForm() {
+    this.recordForm.patchValue({
+      name: this.editRecord.name,
+      mobileNumber: this.editRecord.mobileNumber,
+      notes: this.editRecord.notes,
+      principal: this.editRecord.principalAmount,
+      interestType: this.editRecord.interestType,
+      interestRate: this.editRecord.interestRate,
+      fromDate: this.editRecord.fromDate,
+      calculationType: this.editRecord.calculationType,
+      recordType: this.editRecord.type
+    });
+    if (this.editRecord.calculationType === 'compound') {
+      const ctrl = new FormControl(this.editRecord.compoundFrequency, {
+        updateOn: 'blur',
+        validators: [Validators.required],
+      });
+      this.recordForm.addControl('interval', ctrl);
+    }
   }
 
   onDateChange(modal: IonModal) {

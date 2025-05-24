@@ -132,6 +132,16 @@
 
     .book-item-content {
       padding: 0 0.5rem 0.5rem 0.5rem;
+      border-bottom-left-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+
+      &.borrow {
+        border-bottom: 2px solid var(--ion-color-danger);
+      }
+
+      &.lend {
+        border-bottom: 2px solid var(--ion-color-success);
+      }
     }
 
     .item-col {
@@ -149,7 +159,7 @@
           font-weight: 600;
         }
 
-        &.lent {
+        &.lend {
           color: var(--ion-color-success);
           font-weight: 600;
         }

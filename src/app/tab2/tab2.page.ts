@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { AlertController, ModalController, PopoverController, ToastController } from '@ionic/angular';
 
 import { MenuOptionsComponent } from './menu-options/menu-options.component';
 import { AddRecordComponent } from './add-record/add-record.component';
+import { StorageService } from '../shared/services/storage.service';
+import { IBookRecord, IBookSummary } from '../shared/modals/interest-book';
+import { calculateInterestWithDates } from '../utils';
 
 @Component({
   selector: 'app-tab2',
@@ -13,57 +17,75 @@ import { AddRecordComponent } from './add-record/add-record.component';
 })
 export class Tab2Page implements OnInit {
   //
-  amountSummary: any;
-  totalRecords: any[];
+  savedRecordsSub: Subscription;
+
+  amountSummary: IBookSummary;
+  bookRecords: any[];
 
   constructor(
     private popOverCtrl: PopoverController,
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
+    private storageService: StorageService
   ) {
   }
 
   ngOnInit(): void {
-    this.amountSummary = {
-      netAmount: -1456664,
-      totalLent: 100000,
-      totalLentInterest: 6000,
-      totalLentItems: 2,
-      totalBorrowed: 1426000,
-      totalBorrowedInterest: 166664,
-      totalBorrowedItems: 5
+
+  }
+
+  ionViewWillEnter() {
+    this.savedRecordsSub = this.storageService.savedRecords.subscribe((records) => {
+      const bookRecords = records.filter(x => x.type !== 'saved');
+      this.calculateInterests(bookRecords);
+    });
+  }
+
+  ionViewWillLeave() {
+    this.savedRecordsSub?.unsubscribe();
+  }
+
+  calculateInterests(bookRecords: IBookRecord[]) {
+    if (!bookRecords || !bookRecords.length) {
+      this.bookRecords = [];
+      return;
+    }
+    const acSummary: IBookSummary = {
+      netAmount: 0,
+      totalLent: 0,
+      totalLentInterest: 0,
+      totalLentItems: 0,
+      totalBorrowed: 0,
+      totalBorrowedInterest: 0,
+      totalBorrowedItems: 0
     };
-        this.totalRecords = [
-      {
-        type: 'borrow',
-        name: 'my name',
-        principal: 50000,
-        rate: 12,
-        interestType: 'rupees',
-        givenDate: new Date(),
+    bookRecords.forEach((x: IBookRecord) => {
+      const interestResult = calculateInterestWithDates({
+        principal: x.principalAmount,
+        rate: x.interestRate,
+        interestType: x.calculationType,
+        compoundFrequency: x.compoundFrequency,
+        startDate: new Date(x.fromDate),
         endDate: new Date(),
-        calculationType: 'simple',
-        duration: '2Y 3M 14D',
-        totalInterest: 5000000,
-        totalDue: 55000000,
-        compoundFrequency: 'half-yearly',
-      },
-      {
-        type: 'lent',
-        name: 'my name',
-        principal: 50000,
-        rate: 12,
-        interestType: 'rupees',
-        givenDate: new Date(),
-        endDate: new Date(),
-        calculationType: 'simple',
-        duration: '2Y 3M 14D',
-        totalInterest: 5000000,
-        totalDue: 55000000,
-        compoundFrequency: 'half-yearly',
-      },
-    ];
+      }, true);
+      x.duration = interestResult.duration.totalStr;
+      x.interestAmount = interestResult.interestBreakdown.interestTotal;
+      x.totalDue = interestResult.totalAmount;
+      // Updating summary
+      if (x.type === 'lend') {
+        acSummary.totalLent += x.principalAmount;
+        acSummary.totalLentInterest += x.interestAmount;
+        acSummary.totalLentItems += 1;
+      } else {
+        acSummary.totalBorrowed += x.principalAmount;
+        acSummary.totalBorrowedInterest += x.interestAmount;
+        acSummary.totalBorrowedItems += 1;
+      }
+    });
+    acSummary.netAmount = (acSummary.totalLent + acSummary.totalLentInterest) - (acSummary.totalBorrowed + acSummary.totalBorrowedInterest);
+    this.bookRecords = bookRecords;
+    this.amountSummary = acSummary;
   }
 
   onSearchRecords(event: any) {
@@ -85,16 +107,33 @@ export class Tab2Page implements OnInit {
       if (data.selected === 'edit') {
         this.onEditRecord(bookRecord);
       } else {
-        this.onDeleteRecord(bookRecord);
+        this.onClickDelete(bookRecord);
       }
     }
   }
 
-  onEditRecord(bookRecord: any) {
-    //
+  async onEditRecord(bookRecord: any) {
+    const modalEl = await this.modalCtrl.create({
+      component: AddRecordComponent,
+      componentProps: { editRecord: bookRecord },
+    });
+
+    await modalEl.present();
+    const { data } = await modalEl.onDidDismiss();
+    if (!data) {
+      return;
+    }
+    if (data?.formData) {
+      let record: IBookRecord = this.prepareBookRecord(data.formData, bookRecord);
+      const result = await this.storageService.updateRecord(record);
+      this.storageService.updateSavedRecords(result);
+      this.showToast('Record saved successfully', 'success');
+      return;
+    }
+    this.showToast('Unable to edit record', 'danger', 'Please try again');
   }
 
-  async onDeleteRecord(bookRecord: any) {
+  async onClickDelete(bookRecord: any) {
     const alertEl = await this.alertCtrl.create({
       header: 'Delete the record ?',
       message: 'Record will be deleted permanently and cannot be restored.',
@@ -112,26 +151,72 @@ export class Tab2Page implements OnInit {
       ]
     });
     await alertEl.present();
-    const { data } = await alertEl.onDidDismiss();
-    console.log(data);
+    const { role } = await alertEl.onDidDismiss();
+    if (role === 'cancel') {
+      return;
+    }
+    this.deleteRecord(bookRecord);
+  }
+
+  async deleteRecord(bookRecord: IBookRecord) {
+    const result = await this.storageService.deleteRecord(bookRecord.id);
+    this.storageService.updateSavedRecords(result);
     const toast = await this.toastCtrl.create({
       header: 'Record deleted successfully',
       position: 'top',
       color: 'success',
-      duration: 2000
+      duration: 3000
     });
     await toast.present();
   }
 
   async onClickAddRecord() {
-    console.log('add');
     const modalEl = await this.modalCtrl.create({
       component: AddRecordComponent,
     });
 
     await modalEl.present();
     const { data } = await modalEl.onDidDismiss();
-    console.log(data);
+    if (!data) {
+      return;
+    }
+    if (data?.formData) {
+      let record: IBookRecord = this.prepareBookRecord(data.formData);
+      const result = await this.storageService.addRecord(record);
+      this.storageService.updateSavedRecords(result);
+      this.showToast('Record saved successfully', 'success');
+      return;
+    }
+    this.showToast('Unable to add record', 'danger', 'Please try again');
+  }
+
+  prepareBookRecord(formData: any, editRecord?: IBookRecord): IBookRecord {
+    const record: IBookRecord = {
+      id: editRecord ? editRecord.id : new Date().getTime(),
+      name: formData.name,
+      type: formData.recordType,
+      mobileNumber: formData.mobileNumber,
+      interestType: formData.interestType,
+      interestRate: formData.interestRate,
+      principalAmount: formData.principal,
+      calculationType: formData.calculationType,
+      compoundFrequency: formData.interval,
+      notes: formData.notes,
+      fromDate:  formData.fromDate,
+      toDate:  formData.toDate,
+    };
+    return record;
+  }
+
+  async showToast(header: string, type: string, message?: string) {
+    const toast = await this.toastCtrl.create({
+     header: header,
+     message: message,
+     position: 'top',
+     color: type,
+     duration: 2500
+   });
+   await toast.present();
   }
 
 }

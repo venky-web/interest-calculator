@@ -17,8 +17,9 @@ import { AddRecordComponent } from './add-record/add-record.component';
     FormsModule,
     ReactiveFormsModule,
     Tab2PageRoutingModule,
-    AppCurrencyPipe
+    AppCurrencyPipe,
+    MenuOptionsComponent
   ],
-  declarations: [Tab2Page, AddRecordComponent, MenuOptionsComponent]
+  declarations: [Tab2Page, AddRecordComponent]
 })
 export class Tab2PageModule {}

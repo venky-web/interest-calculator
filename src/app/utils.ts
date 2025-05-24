@@ -3,8 +3,8 @@ export interface IInterestParams {
   rate: number; // percentage per annum
   startDate?: Date;
   endDate?: Date;
-  interestType: 'simple' | 'compound';
-  compoundFrequency?: 'yearly' | 'half-yearly' | 'quarterly' | 'monthly';
+  interestType: string; // 'simple' | 'compound';
+  compoundFrequency?: string; // 'yearly' | 'half-yearly' | 'quarterly' | 'monthly';
   years?: number;
   months?: number;
   days?: number;
@@ -28,7 +28,7 @@ export interface IInterestResult {
   totalAmount: number;
 }
 
-export function calculateInterestWithDates(params: IInterestParams): IInterestResult {
+export function calculateInterestWithDates(params: IInterestParams, shortFormat = false): IInterestResult {
   const { principal, rate, interestType, compoundFrequency } = params;
   const startDate = new Date(params.startDate);
   const endDate = new Date(params.endDate);
@@ -62,6 +62,7 @@ export function calculateInterestWithDates(params: IInterestParams): IInterestRe
 
   const interestPerDay = totalDays > 0 ? interestTotal / totalDays : interestTotal;
   const interestPerMonth = totalMonths > 0 ? interestTotal / totalMonths : interestTotal;
+  const totalDuration = shortFormat ? `${Math.floor(totalYears)}Y, ${months >= 0 ? months : (12 + months)}M, ${days >= 0 ? days : (30 + days)}D` : `${Math.floor(totalYears)} Years, ${months >= 0 ? months : (12 + months)} Months, ${days >= 0 ? days : (30 + days)} Days`;
 
   return {
     duration: {
@@ -71,7 +72,7 @@ export function calculateInterestWithDates(params: IInterestParams): IInterestRe
       totalDays,
       totalMonths,
       totalYears: parseFloat(totalYears.toFixed(2)),
-      totalStr: `${Math.floor(totalYears)} Years, ${months >= 0 ? months : (12 + months)} Months, ${days >= 0 ? days : (30 + days)} Days`
+      totalStr: totalDuration
     },
     interestBreakdown: {
       interestPerDay: parseFloat(interestPerDay.toFixed(2)),
@@ -83,7 +84,7 @@ export function calculateInterestWithDates(params: IInterestParams): IInterestRe
 }
 
 
-export function calculateInterestWithDuration(params: IInterestParams): IInterestResult {
+export function calculateInterestWithDuration(params: IInterestParams, shortFormat = false): IInterestResult {
   const { principal, rate, years, months, days, interestType, compoundFrequency } = params;
 
   const totalDays = Math.floor( (years * 365) + (months * 30.44) + params.days);
@@ -120,7 +121,7 @@ export function calculateInterestWithDuration(params: IInterestParams): IInteres
       totalDays,
       totalMonths,
       totalYears: parseFloat(totalYears.toFixed(2)),
-      totalStr: `${years} Years, ${months} Months, ${days} Days`
+      totalStr: shortFormat ? `${years}Y, ${months}M, ${days}D` : `${years} Years, ${months} Months, ${days} Days`
     },
     interestBreakdown: {
       interestPerDay: parseFloat(interestPerDay.toFixed(2)),

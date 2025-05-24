@@ -181,8 +181,6 @@ export class Tab1Page implements OnInit {
         days: this.formValue.days || 0,
       });
     }
-    console.log(this.formValue);
-    console.log(this.interestResult);
   }
 
   validateForm(): boolean {
@@ -250,8 +248,9 @@ export class Tab1Page implements OnInit {
         days: this.formValue.days,
       }
     }
-    console.log(data);
-    await this.storageService.addRecord(data);
+    const result = await this.storageService.addRecord(data);
+    this.saveRecordModal.dismiss(null, 'save');
+    this.storageService.updateSavedRecords(result);
   }
 
   cancel() {

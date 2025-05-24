@@ -42,7 +42,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ng-container *ngFor="let item of totalRecords">
+      <ng-container *ngFor="let item of bookRecords">
         <ion-col class="book-records" size="12" size-md="6">
           <ng-container *ngTemplateOutlet="bookRecordTemplate; context:  {$implicit: item}"></ng-container>
         </ion-col>
@@ -63,10 +63,10 @@
         </ion-button>
       </ion-col>
     </ion-row>
-    <ion-row class="book-item-content">
+    <ion-row class="book-item-content {{data.type}}">
       <ion-col size="6" class="item-col border-right">
         <span class="item-title">Amount</span>
-        <span class="item-value">{{ data?.principal | appCurrency}}</span>
+        <span class="item-value">{{ data?.principalAmount | appCurrency}}</span>
       </ion-col>
       <ion-col size="6" class="item-col">
         <span class="item-title">Duration</span>
@@ -74,15 +74,15 @@
       </ion-col>
       <ion-col size="6" class="item-col border-right">
         <span class="item-title">Interest Rate</span>
-        <span class="item-value">{{ data?.rate }}</span>
+        <span class="item-value">{{ data?.interestType === 'rupees' ?  '₹' + data?.interestRate : data?.interestRate + ' %' }}</span>
       </ion-col>
       <ion-col size="6" class="item-col">
         <span class="item-title">Given Date</span>
-        <span class="item-value">{{ data?.givenDate | date: 'dd/MM/yyyy'}}</span>
+        <span class="item-value">{{ data?.fromDate | date: 'dd/MM/yyyy'}}</span>
       </ion-col>
       <ion-col size="6" class="item-col border-right">
         <span class="item-title">Total Interest</span>
-        <span class="item-value {{data.type}}">{{ data?.totalInterest | appCurrency}}</span>
+        <span class="item-value {{data.type}}">{{ data?.interestAmount | appCurrency}}</span>
       </ion-col>
       <ion-col size="6" class="item-col">
         <span class="item-title">Total Due</span>
@@ -100,7 +100,7 @@
         <span>Lent</span>
       </ion-col>
       <ion-col>
-        <span class="lent-count">{{ amountSummary?.totalLentItems }}</span>
+        <span class="lent-count">{{ amountSummary?.totalLentItems || 0 }}</span>
       </ion-col>
     </ion-row>
     <ion-row class="ion-padding-horizontal">
@@ -133,7 +133,7 @@
       </ion-col>
       <ion-col>
         <span class="borrow-count"
-          >{{ amountSummary?.totalBorrowedItems }}</span
+          >{{ amountSummary?.totalBorrowedItems || 0 }}</span
         >
       </ion-col>
     </ion-row>
