@@ -184,6 +184,11 @@
       <p>{{ interestResult.duration.totalStr }}</p>
     </div>
     <div>
+      <p>Interest per Day</p>
+      <p>:</p>
+      <p>{{ interestResult.interestBreakdown.interestPerDay | appCurrency }}</p>
+    </div>
+    <div>
       <p>Total Interest</p>
       <p>:</p>
       <p>{{ interestResult.interestBreakdown.interestTotal | appCurrency }}</p>
@@ -193,11 +198,6 @@
       <p>:</p>
       <p>{{ interestResult.interestBreakdown.interestPerMonth | appCurrency }}</p>
     </div> -->
-    <div>
-      <p>Interest per Day</p>
-      <p>:</p>
-      <p>{{ interestResult.interestBreakdown.interestPerDay | appCurrency }}</p>
-    </div>
     <div class="total-amount">
       <p>Total Amount</p>
       <p>:</p>
@@ -211,3 +211,29 @@
     </div>
   </section>
 </ng-template>
+
+<ion-modal #saveRecordModal id="save-record-modal" (willDismiss)="onWillDismiss($event)">
+  <ng-template>
+    <section class="modal-header ion-text-center">
+      <h3 class="m-0">Save Record</h3>
+    </section>
+    <section class="ion-padding">
+      <div class="ion-margin-bottom">
+        <ion-label>Borrower Name</ion-label>
+        <ion-input
+          type="text"
+          fill="outline"
+          placeholder="Enter borrower name"
+          [(ngModel)]="borrowerName"
+          required
+          maxlength="50"
+        ></ion-input>
+        <p class="error-text" *ngIf="borrowerCtrlError">{{ borrowerCtrlError }}</p>
+      </div>
+      <div class="d-flex justify-content-around align-items-center">
+        <ion-button color="light" (click)="cancel()">Cancel</ion-button>
+        <ion-button color="primary" (click)="onClickSave('saveRecord')">Save</ion-button>
+      </div>
+    </section>
+  </ng-template>
+</ion-modal>

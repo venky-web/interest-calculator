@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { IonModal } from '@ionic/angular';
@@ -7,6 +7,8 @@ import {
   calculateInterestWithDuration,
   IInterestResult,
 } from '../utils';
+import { StorageService } from '../shared/services/storage.service';
+import { IBookRecord } from '../shared/modals/interest-book';
 
 @Component({
   selector: 'app-tab1',
@@ -16,6 +18,8 @@ import {
 })
 export class Tab1Page implements OnInit {
   //
+  @ViewChild('saveRecordModal') saveRecordModal!: IonModal;
+
   calculatorForm: FormGroup;
 
   interestResult: IInterestResult;
@@ -23,8 +27,10 @@ export class Tab1Page implements OnInit {
   durationError: boolean;
   sameDateError: boolean;
   invalidDatesError: boolean;
+  borrowerName: string;
+  borrowerCtrlError: string;
 
-  constructor() {
+  constructor(private storageService: StorageService) {
     this.createForm();
   }
 
@@ -47,6 +53,10 @@ export class Tab1Page implements OnInit {
         }
       }
     );
+  }
+
+  ionViewWillEnter() {
+    this.onClickCancel();
   }
 
   createForm() {
@@ -171,6 +181,8 @@ export class Tab1Page implements OnInit {
         days: this.formValue.days || 0,
       });
     }
+    console.log(this.formValue);
+    console.log(this.interestResult);
   }
 
   validateForm(): boolean {
@@ -195,7 +207,58 @@ export class Tab1Page implements OnInit {
     return !this.durationError;
   }
 
-  onClickSave() {
-    //
+  async onClickSave(modal?: string) {
+    if (!modal) {
+      this.saveRecordModal.present();
+      return;
+    }
+    this.borrowerCtrlError = null;
+    const regex = /^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$/;
+    if (!this.borrowerName || this.borrowerName.length === 0) {
+      this.borrowerCtrlError = 'Please enter borrower name';
+      return;
+    } else if (this.borrowerName.length > 50) {
+      this.borrowerCtrlError = 'Name cannot be more than 50 characters';
+      return;
+    } else if (!regex.test(this.borrowerName)) {
+      this.borrowerCtrlError = 'Invalid name. Name can only contain alphabets, numbers and space';
+      return;
+    }
+    let data: IBookRecord = {
+      id: new Date().getTime(),
+      name: this.borrowerName,
+      type: 'saved',
+      mobileNumber: null,
+      interestType: this.formValue.interestType,
+      interestRate: this.formValue.interestRate,
+      principalAmount: this.formValue.principal,
+      calculationType: this.formValue.calculationType,
+      compoundFrequency: this.formValue.interval,
+      notes: null,
+    };
+    if (this.formValue.tenureType === 'dates') {
+      data = {
+        ...data,
+        fromDate: this.formValue.fromDate,
+        toDate: this.formValue.toDate,
+      };
+    } else {
+      data = {
+        ...data,
+        years: this.formValue.years,
+        months: this.formValue.months,
+        days: this.formValue.days,
+      }
+    }
+    console.log(data);
+    await this.storageService.addRecord(data);
+  }
+
+  cancel() {
+    this.saveRecordModal.dismiss(null, 'cancel');
+  }
+
+  onWillDismiss(event: any) {
+    this.borrowerCtrlError = null;
   }
 }
