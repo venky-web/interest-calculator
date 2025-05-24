@@ -1,0 +1,216 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Add Record</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onClickCancel()">
+        <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form [formGroup]="recordForm" class="ion-padding">
+    <div class="ion-margin-bottom">
+      <label for="principal">Principal Amount</label>
+      <ion-input aria-label="Principal Amount" name="principal" formControlName="principal" fill="outline" type="number"
+        placeholder="Enter principal amount" [clearInput]="true"></ion-input>
+      <ng-container *ngIf="formCtrls['principal'].errors && (formCtrls['principal'].touched || formCtrls['principal'].dirty)">
+        <p class="error-text mt-0" *ngIf="formCtrls['principal'].errors['max']">
+          Should be less than or equal to 13 characters
+        </p>
+        <p class="error-text mt-0" *ngIf="formCtrls['principal'].errors['required']">
+          This field is required
+        </p>
+      </ng-container>
+    </div>
+    <div class="ion-margin-bottom">
+      <label for="interestType">Interest Type</label>
+      <ion-radio-group class="radio-group" name="interestType" formControlName="interestType">
+        <ion-radio value="rupees" labelPlacement="end" justify="start">Rupees (&#8377;)</ion-radio>
+        <ion-radio value="percentage" labelPlacement="end" justify="start">Percentage (&#x25;)</ion-radio>
+      </ion-radio-group>
+    </div>
+    <div class="ion-margin-bottom">
+      <label for="interestRate">Interest Rate</label>
+      <ion-input aria-label="Principal Amount" name="interestRate" formControlName="interestRate" fill="outline" type="number"
+        placeholder="Enter interest rate" [clearInput]="true"></ion-input>
+      <ng-container *ngIf="formCtrls['interestRate'].errors && (formCtrls['interestRate'].touched || formCtrls['interestRate'].dirty)">
+        <p class="error-text mt-0" *ngIf="formCtrls['interestRate'].errors['max']">
+          Should be less than or equal to 100
+        </p>
+        <p class="error-text mt-0" *ngIf="formCtrls['interestRate'].errors['required']">
+          This field is required
+        </p>
+      </ng-container>
+    </div>
+    <div class="ion-margin-bottom">
+      <label for="tenureType">Tenure Type</label>
+      <ion-radio-group class="radio-group" name="tenureType" formControlName="tenureType">
+        <ion-radio value="dates" labelPlacement="end" justify="start">Dates</ion-radio>
+        <ion-radio value="duration" labelPlacement="end" justify="start">Duration</ion-radio>
+      </ion-radio-group>
+    </div>
+    <ng-container *ngIf="formCtrls['fromDate']">
+      <div class="ion-margin-bottom date-ctrl-section">
+        <!-- From Date -->
+        <div>
+          <ion-label position="stacked">From Date</ion-label>
+          <ion-datetime-button datetime="fromDatePicker"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true" #fromDateModal>
+            <ng-template>
+              <ion-datetime
+                id="fromDatePicker"
+                name="fromDate"
+                formControlName="fromDate"
+                presentation="date"
+                display-format="DD/MM/YYYY"
+                (ionChange)="onDateChange(fromDateModal)"
+              ></ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </div>
+        <!-- To Date -->
+        <div>
+          <ion-label position="stacked">To Date</ion-label>
+          <ion-datetime-button datetime="toDatePicker"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true" #toDateModal>
+            <ng-template>
+              <ion-datetime
+                id="toDatePicker"
+                name="toDate"
+                formControlName="toDate"
+                presentation="date"
+                display-format="DD/MM/YYYY"
+                (ionChange)="onDateChange(toDateModal)"
+              ></ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </div>
+      </div>
+      <ng-container *ngIf="formCtrls['fromDate'].errors && (formCtrls['fromDate'].touched || formCtrls['fromDate'].dirty)">
+        <p class="error-text mt-0" *ngIf="formCtrls['fromDate'].errors['required']">
+          From-Date is required
+        </p>
+      </ng-container>
+      <ng-container *ngIf="formCtrls['toDate'].errors && (formCtrls['toDate'].touched || formCtrls['toDate'].dirty)">
+        <p class="error-text mt-0" *ngIf="formCtrls['toDate'].errors['required']">
+          To-Date is required
+        </p>
+      </ng-container>
+      <ng-container *ngIf="sameDateError">
+        <p class="error-text mt-0">From-Date & To-Date cannot be same</p>
+      </ng-container>
+      <ng-container *ngIf="invalidDatesError">
+        <p class="error-text mt-0">From-Date cannot be greater than To-Date</p>
+      </ng-container>
+    </ng-container>
+    <!-- Duration controls -->
+    <ng-container *ngIf="formCtrls['years']">
+      <div class="ion-margin-bottom duration-ctrl-section">
+        <!-- Year -->
+        <div>
+          <label for="years">Year (s)</label>
+          <ion-input aria-label="Years" name="years" formControlName="years" fill="outline" type="number"
+            placeholder="Enter years"></ion-input>
+        </div>
+        <!-- Month -->
+        <div>
+          <label for="months">Month (s)</label>
+          <ion-input aria-label="Months" name="months" formControlName="months" fill="outline" type="number"
+            placeholder="Enter months"></ion-input>
+        </div>
+        <!-- Date -->
+        <div>
+          <label for="days">Day (s)</label>
+          <ion-input aria-label="Days" name="days" formControlName="days" fill="outline" type="number"
+            placeholder="Enter days"></ion-input>
+        </div>
+      </div>
+      <ng-container *ngIf="durationError">
+        <p class="error-text mt-0">At least one field is required</p>
+      </ng-container>
+    </ng-container>
+    <div class="ion-margin-bottom">
+      <ion-radio-group name="calculationType" formControlName="calculationType">
+        <ion-radio value="simple" labelPlacement="end" justify="start">Simple Interest</ion-radio>
+        <ion-radio value="compound" labelPlacement="end" justify="start">Compound Interest</ion-radio>
+      </ion-radio-group>
+    </div>
+    <ng-container *ngIf="formCtrls['interval']">
+      <div class="ion-margin-bottom">
+        <ion-select
+          label="Compound Interval"
+          name="interval"
+          formControlName="interval"
+          interface="action-sheet"
+          placeholder="Select an option"
+          cancelText="Cancel"
+          fill="outline">
+          <ion-select-option value="yearly">Yearly</ion-select-option>
+          <ion-select-option value="halfYearly">Half-Yearly</ion-select-option>
+          <ion-select-option value="quarterly">Quarterly</ion-select-option>
+          <ion-select-option value="monthly">Monthly</ion-select-option>
+        </ion-select>
+        <ng-container *ngIf="formCtrls['interval'].errors && (formCtrls['interval'].touched || formCtrls['interval'].dirty)">
+          <p class="error-text mt-0" *ngIf="formCtrls['interval'].errors['required']">
+            This field is required
+          </p>
+        </ng-container>
+      </div>
+    </ng-container>
+    <div class="ion-margin-bottom btn-section">
+      <ion-button color="light" (click)="onClickCancel()">Clear</ion-button>
+      <ion-button color="primary" (click)="onClickCalculate()">Calculate</ion-button>
+    </div>
+  </form>
+  <ng-container *ngIf="interestResult">
+    <ng-template [ngTemplateOutlet]="interestResultTemplate"></ng-template>
+  </ng-container>
+</ion-content>
+
+<ng-template #interestResultTemplate>
+  <section class="interest-result">
+    <div>
+      <p>Principal Amount</p>
+      <p>:</p>
+      <p>{{ formValue.principal | appCurrency }} </p>
+    </div>
+    <div>
+      <p>Interest Rate</p>
+      <p>:</p>
+      <p>{{ formValue.interestRate }} {{ formValue.interestType }}</p>
+    </div>
+    <div>
+      <p>Total Duration</p>
+      <p>:</p>
+      <p>{{ interestResult.duration.totalStr }}</p>
+    </div>
+    <div>
+      <p>Interest per Day</p>
+      <p>:</p>
+      <p>{{ interestResult.interestBreakdown.interestPerDay | appCurrency }}</p>
+    </div>
+    <div>
+      <p>Total Interest</p>
+      <p>:</p>
+      <p>{{ interestResult.interestBreakdown.interestTotal | appCurrency }}</p>
+    </div>
+    <!-- <div>
+      <p>Interest per Month</p>
+      <p>:</p>
+      <p>{{ interestResult.interestBreakdown.interestPerMonth | appCurrency }}</p>
+    </div> -->
+    <div class="total-amount">
+      <p>Total Amount</p>
+      <p>:</p>
+      <p>{{ interestResult.totalAmount | appCurrency }}</p>
+    </div>
+    <div class="ion-margin-bottom save-btn-section">
+      <ion-button color="primary" expand="block" (click)="onClickSave()">Update</ion-button>
+    </div>
+    <div class="disclaimer-section">
+      <p>* Calculations are made based on our personal understanding only. It may not be the same as banks.</p>
+    </div>
+  </section>
+</ng-template>

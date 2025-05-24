@@ -1,16 +1,130 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
+  <ion-toolbar color="primary">
+    <ion-title> Saved Records </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
+<ion-content class="ion-padding" color="light" [fullscreen]="true">
+  <ion-grid
+    class="main-grid ion-margin-bottom"
+    [fixed]="true"
+    size-md="12"
+    size-lg="8"
+    offset-lg="2"
+  >
+    <ion-row>
+      <ion-col>
+        <ion-searchbar
+          class="search-box"
+          animated="true"
+          [debounce]="500"
+          (ionInput)="onSearchRecords($event)"
+        ></ion-searchbar>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ng-container *ngFor="let item of savedRecords">
+        <ion-col class="book-records" size="12" size-md="6">
+          <ng-container
+            *ngTemplateOutlet="savedRecordTemplate; context:  {$implicit: item}"
+          ></ng-container>
+        </ion-col>
+      </ng-container>
+    </ion-row>
+  </ion-grid>
 </ion-content>
+
+<ng-template #savedRecordTemplate let-data>
+  <ion-grid class="book-item-grid ion-no-padding box-shadow">
+    <ion-row class="book-item-header">
+      <ion-col>
+        <span>{{ data.name }}</span>
+      </ion-col>
+      <ion-col>
+        <ion-button
+          size="small"
+          fill="outline"
+          color="medium"
+          class="ion-no-margin"
+          (click)="onClickMenu($event, data)"
+        >
+          <ion-icon name="menu-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="6" class="item-col">
+        <span class="item-title">Amount</span>
+      </ion-col>
+      <ion-col size="6" class="item-col">
+        <span class="item-value">{{ data?.principalAmount | appCurrency}}</span>
+      </ion-col>
+    </ion-row>
+    <!-- from date and To-Date columns -->
+    <ng-container *ngIf="data.tenureType === 'dates'">
+      <ion-row>
+        <ion-col size="6" class="item-col">
+          <span class="item-title">Given Date</span>
+        </ion-col>
+        <ion-col size="6" class="item-col">
+          <span class="item-value">{{ data?.fromDate | date: 'dd/MM/yyyy'}}</span>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6" class="item-col">
+          <span class="item-title">Received Date</span>
+        </ion-col>
+        <ion-col size="6" class="item-col">
+          <span class="item-value">{{ data?.toDate | date: 'dd/MM/yyyy'}}</span>
+        </ion-col>
+      </ion-row>
+    </ng-container>
+    <!-- Duration columns -->
+    <ng-container *ngIf="data.tenureType === 'duration'">
+
+    </ng-container>
+    <ion-row>
+      <ion-col size="6" class="item-col">
+        <span class="item-title">Interest Rate</span>
+      </ion-col>
+      <ion-col size="6" class="item-col">
+        <span class="item-value">{{ data?.interestRate | appCurrency}} {{ data?.interestType }}</span>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="6" class="item-col">
+        <span class="item-title">Interest Amount</span>
+      </ion-col>
+      <ion-col size="6" class="item-col">
+        <span class="item-value">{{ data?.interestAmount | appCurrency}}</span>
+      </ion-col>
+    </ion-row>
+    <!-- <ion-row>
+      <span class="item-title">Duration</span>
+      <span class="item-value">{{ data?.duration }}</span>
+      <ion-col size="6" class="item-col border-right">
+        <span class="item-title">Interest Rate</span>
+        <span class="item-value"
+          >{{ data?.interestType === 'rupees' ? '₹' + data?.interestRate :
+          data?.interestRate + ' %' }}</span
+        >
+      </ion-col>
+      <ion-col size="6" class="item-col">
+        
+        
+      </ion-col>
+      <ion-col size="6" class="item-col border-right">
+        <span class="item-title">Total Interest</span>
+        <span class="item-value {{data.type}}"
+          >{{ data?.interestAmount | appCurrency}}</span
+        >
+      </ion-col>
+      <ion-col size="6" class="item-col">
+        <span class="item-title">Total Due</span>
+        <span class="item-value {{data.type}}"
+          >{{ data?.totalDue | appCurrency}}</span
+        >
+      </ion-col>
+    </ion-row> -->
+  </ion-grid>
+</ng-template>
