@@ -1,13 +1,16 @@
-.form-group {
-  margin-bottom: 16px;
+ion-content {
+  --keyboard-offset: 1rem;
+  --offset-bottom: 1rem;
+}
+
+.box-shadow {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 
 label {
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
-  // font-size: 14px;
-  color: #333;
 }
 
 ion-radio {
@@ -43,10 +46,10 @@ ion-radio {
 }
 
 .interest-result {
-  padding: 16px;
-  margin: 16px;
-  border: 1px solid grey;
-  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 1rem 3rem 1rem;
+  // border: 1px solid grey;
+  border-radius: 0.5rem;
 
   > div {
     display: grid;

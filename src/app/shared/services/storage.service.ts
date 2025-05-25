@@ -18,7 +18,6 @@ export class StorageService {
   constructor() {
     this.getAllRecords().then((records) => {
       this._savedRecords.next(records);
-      console.log(records);
     });
   }
 

@@ -13,6 +13,8 @@ import { StorageService } from '../shared/services/storage.service';
 import { MenuOptionsComponent } from '../tab2/menu-options/menu-options.component';
 import { EditRecordComponent } from './edit-record/edit-record.component';
 import { calculateInterestWithDates, calculateInterestWithDuration } from '../utils';
+import { AdmobService } from '../shared/services/admob.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-tab3',
@@ -32,7 +34,8 @@ export class Tab3Page {
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private adMobService: AdmobService
   ) {}
 
   ionViewWillEnter() {
@@ -42,10 +45,14 @@ export class Tab3Page {
         this.calculateInterests(savedRecords);
       }
     );
+    // const adUnitId = environment.interestCalBannerAdUnitId;
+    // const adUnitId = 'ca-app-pub-3940256099942544/6300978111'; // Test Ad Unit ID
+    // this.adMobService.showBannerAd('saved-records', adUnitId);
   }
 
   ionViewWillLeave() {
     this.savedRecordsSub?.unsubscribe();
+    // this.adMobService.hideBannerAd();
   }
 
   calculateInterests(savedRecords: ISavedRecord[]) {

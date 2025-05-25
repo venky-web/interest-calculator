@@ -9,6 +9,8 @@ import {
 } from '../utils';
 import { StorageService } from '../shared/services/storage.service';
 import { ISavedRecord } from '../shared/modals/interest-book';
+import { AdmobService } from '../shared/services/admob.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-tab1',
@@ -30,7 +32,7 @@ export class Tab1Page implements OnInit {
   borrowerName: string;
   borrowerCtrlError: string;
 
-  constructor(private storageService: StorageService, private toastCtrl: ToastController) {
+  constructor(private storageService: StorageService, private toastCtrl: ToastController, private admobService: AdmobService) {
     this.createForm();
   }
 
@@ -57,6 +59,13 @@ export class Tab1Page implements OnInit {
 
   ionViewWillEnter() {
     this.onClickCancel();
+    // const adUnitId = environment.interestCalBannerAdUnitId;
+    // const adUnitId = 'ca-app-pub-3940256099942544/6300978111'; // Test Ad Unit ID
+    // this.admobService.showBannerAd('interest-calculator', adUnitId);
+  }
+
+  ionViewWillLeave() {
+    // this.admobService.hideBannerAd();
   }
 
   createForm() {
