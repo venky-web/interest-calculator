@@ -1,4 +1,4 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" id="saved-records-header">
   <ion-toolbar color="primary">
     <ion-title> Saved Records </ion-title>
   </ion-toolbar>
@@ -23,7 +23,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ng-container *ngFor="let item of savedRecords">
+      <ng-container *ngFor="let item of savedRecords | searchRecord: searchText">
         <ion-col class="book-records" size="12" size-md="6">
           <ng-container
             *ngTemplateOutlet="savedRecordTemplate; context:  {$implicit: item}"
@@ -35,7 +35,7 @@
 </ion-content>
 
 <ng-template #savedRecordTemplate let-data>
-  <ion-grid class="book-item-grid ion-no-padding box-shadow">
+  <ion-grid class="book-item-grid box-shadow">
     <ion-row class="book-item-header">
       <ion-col>
         <span>{{ data.name }}</span>
@@ -64,7 +64,7 @@
     <ng-container *ngIf="data.tenureType === 'dates'">
       <ion-row>
         <ion-col size="6" class="item-col">
-          <span class="item-title">Given Date</span>
+          <span class="item-title">From Date</span>
         </ion-col>
         <ion-col size="6" class="item-col">
           <span class="item-value">{{ data?.fromDate | date: 'dd/MM/yyyy'}}</span>
@@ -72,7 +72,7 @@
       </ion-row>
       <ion-row>
         <ion-col size="6" class="item-col">
-          <span class="item-title">Received Date</span>
+          <span class="item-title">To Date</span>
         </ion-col>
         <ion-col size="6" class="item-col">
           <span class="item-value">{{ data?.toDate | date: 'dd/MM/yyyy'}}</span>
@@ -81,14 +81,21 @@
     </ng-container>
     <!-- Duration columns -->
     <ng-container *ngIf="data.tenureType === 'duration'">
-
+      <ion-row>
+        <ion-col size="6" class="item-col">
+          <span class="item-title">Duration</span>
+        </ion-col>
+        <ion-col size="6" class="item-col">
+          <span class="item-value">{{ data?.duration }}</span>
+        </ion-col>
+      </ion-row>
     </ng-container>
     <ion-row>
       <ion-col size="6" class="item-col">
         <span class="item-title">Interest Rate</span>
       </ion-col>
       <ion-col size="6" class="item-col">
-        <span class="item-value">{{ data?.interestRate | appCurrency}} {{ data?.interestType }}</span>
+        <span class="item-value">{{ data?.interestType === 'rupees' ?  '₹' + data?.interestRate : data?.interestRate + ' %' }}</span>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -99,32 +106,13 @@
         <span class="item-value">{{ data?.interestAmount | appCurrency}}</span>
       </ion-col>
     </ion-row>
-    <!-- <ion-row>
-      <span class="item-title">Duration</span>
-      <span class="item-value">{{ data?.duration }}</span>
-      <ion-col size="6" class="item-col border-right">
-        <span class="item-title">Interest Rate</span>
-        <span class="item-value"
-          >{{ data?.interestType === 'rupees' ? '₹' + data?.interestRate :
-          data?.interestRate + ' %' }}</span
-        >
-      </ion-col>
-      <ion-col size="6" class="item-col">
-        
-        
-      </ion-col>
-      <ion-col size="6" class="item-col border-right">
-        <span class="item-title">Total Interest</span>
-        <span class="item-value {{data.type}}"
-          >{{ data?.interestAmount | appCurrency}}</span
-        >
-      </ion-col>
+    <ion-row>
       <ion-col size="6" class="item-col">
         <span class="item-title">Total Due</span>
-        <span class="item-value {{data.type}}"
-          >{{ data?.totalDue | appCurrency}}</span
-        >
       </ion-col>
-    </ion-row> -->
+      <ion-col size="6" class="item-col">
+        <span class="item-value">{{ data?.totalDue | appCurrency}}</span>
+      </ion-col>
+    </ion-row>
   </ion-grid>
 </ng-template>

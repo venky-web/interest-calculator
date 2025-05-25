@@ -12,6 +12,24 @@
 <ion-content [fullscreen]="true">
   <form [formGroup]="recordForm" class="ion-padding">
     <div class="ion-margin-bottom">
+      <ion-label>Borrower Name</ion-label>
+      <ion-input
+        type="text"
+        fill="outline"
+        placeholder="Enter borrower name"
+        name="name"
+        formControlName="name"
+      ></ion-input>
+      <ng-container *ngIf="formCtrls['name'].errors && (formCtrls['name'].touched || formCtrls['name'].dirty)">
+        <p class="error-text mt-0" *ngIf="formCtrls['name'].errors['maxlength']">
+          Should be less than or equal to 50 characters
+        </p>
+        <p class="error-text mt-0" *ngIf="formCtrls['name'].errors['required']">
+          This field is required
+        </p>
+      </ng-container>
+    </div>
+    <div class="ion-margin-bottom">
       <label for="principal">Principal Amount</label>
       <ion-input aria-label="Principal Amount" name="principal" formControlName="principal" fill="outline" type="number"
         placeholder="Enter principal amount" [clearInput]="true"></ion-input>
@@ -196,11 +214,6 @@
       <p>:</p>
       <p>{{ interestResult.interestBreakdown.interestTotal | appCurrency }}</p>
     </div>
-    <!-- <div>
-      <p>Interest per Month</p>
-      <p>:</p>
-      <p>{{ interestResult.interestBreakdown.interestPerMonth | appCurrency }}</p>
-    </div> -->
     <div class="total-amount">
       <p>Total Amount</p>
       <p>:</p>

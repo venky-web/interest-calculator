@@ -9,6 +9,7 @@ import { Tab3PageRoutingModule } from './tab3-routing.module';
 import { EditRecordComponent } from './edit-record/edit-record.component';
 import { AppCurrencyPipe } from '../shared/pipes/app-currency.pipe';
 import { MenuOptionsComponent } from '../tab2/menu-options/menu-options.component';
+import { SearchRecordPipe } from '../shared/pipes/search-record.pipe';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { MenuOptionsComponent } from '../tab2/menu-options/menu-options.componen
     ReactiveFormsModule,
     Tab3PageRoutingModule,
     AppCurrencyPipe,
+    SearchRecordPipe,
     MenuOptionsComponent
   ],
   declarations: [Tab3Page, EditRecordComponent]

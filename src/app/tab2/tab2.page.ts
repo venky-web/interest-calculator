@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { AlertController, ModalController, PopoverController, ToastController } from '@ionic/angular';
@@ -15,12 +15,13 @@ import { calculateInterestWithDates } from '../utils';
   styleUrls: ['tab2.page.scss'],
   standalone: false,
 })
-export class Tab2Page implements OnInit {
+export class Tab2Page {
   //
   savedRecordsSub: Subscription;
 
   amountSummary: IBookSummary;
   bookRecords: any[];
+  searchText: string;
 
   constructor(
     private popOverCtrl: PopoverController,
@@ -29,10 +30,6 @@ export class Tab2Page implements OnInit {
     private modalCtrl: ModalController,
     private storageService: StorageService
   ) {
-  }
-
-  ngOnInit(): void {
-
   }
 
   ionViewWillEnter() {
@@ -89,7 +86,7 @@ export class Tab2Page implements OnInit {
   }
 
   onSearchRecords(event: any) {
-    //
+    this.searchText = event.detail.value;
   }
 
   async onClickMenu(event: any, bookRecord: any) {
@@ -165,7 +162,8 @@ export class Tab2Page implements OnInit {
       header: 'Record deleted successfully',
       position: 'top',
       color: 'success',
-      duration: 3000
+      duration: 3000,
+      positionAnchor: 'interest-book-header',
     });
     await toast.present();
   }
@@ -214,7 +212,8 @@ export class Tab2Page implements OnInit {
      message: message,
      position: 'top',
      color: type,
-     duration: 2500
+     duration: 2500,
+     positionAnchor: 'interest-book-header',
    });
    await toast.present();
   }

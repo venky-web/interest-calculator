@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { IonModal } from '@ionic/angular';
+import { IonModal, ToastController } from '@ionic/angular';
 import {
   calculateInterestWithDates,
   calculateInterestWithDuration,
   IInterestResult,
 } from '../utils';
 import { StorageService } from '../shared/services/storage.service';
-import { IBookRecord } from '../shared/modals/interest-book';
+import { ISavedRecord } from '../shared/modals/interest-book';
 
 @Component({
   selector: 'app-tab1',
@@ -30,7 +30,7 @@ export class Tab1Page implements OnInit {
   borrowerName: string;
   borrowerCtrlError: string;
 
-  constructor(private storageService: StorageService) {
+  constructor(private storageService: StorageService, private toastCtrl: ToastController) {
     this.createForm();
   }
 
@@ -131,8 +131,8 @@ export class Tab1Page implements OnInit {
     }
   }
 
-  onDateChange(modal: IonModal) {
-    modal?.dismiss();
+  async onDateChange(modal: IonModal) {
+    await modal?.dismiss();
   }
 
   onClickCancel() {
@@ -222,7 +222,7 @@ export class Tab1Page implements OnInit {
       this.borrowerCtrlError = 'Invalid name. Name can only contain alphabets, numbers and space';
       return;
     }
-    let data: IBookRecord = {
+    let data: ISavedRecord = {
       id: new Date().getTime(),
       name: this.borrowerName,
       type: 'saved',
@@ -233,6 +233,7 @@ export class Tab1Page implements OnInit {
       calculationType: this.formValue.calculationType,
       compoundFrequency: this.formValue.interval,
       notes: null,
+      tenureType: this.formValue.tenureType,
     };
     if (this.formValue.tenureType === 'dates') {
       data = {
@@ -251,6 +252,8 @@ export class Tab1Page implements OnInit {
     const result = await this.storageService.addRecord(data);
     this.saveRecordModal.dismiss(null, 'save');
     this.storageService.updateSavedRecords(result);
+    await this.showToast('Record saved successfully', 'success');
+    this.onClickCancel();
   }
 
   cancel() {
@@ -259,5 +262,17 @@ export class Tab1Page implements OnInit {
 
   onWillDismiss(event: any) {
     this.borrowerCtrlError = null;
+  }
+
+  async showToast(header: string, type: string, message?: string) {
+    const toast = await this.toastCtrl.create({
+     header: header,
+     message: message,
+     position: 'top',
+     color: type,
+     duration: 2500,
+     positionAnchor: 'interest-calculator-header',
+   });
+   await toast.present();
   }
 }

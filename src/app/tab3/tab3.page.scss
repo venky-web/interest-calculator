@@ -10,3 +10,19 @@
     margin-bottom: 0.5rem;
   }
 }
+
+.book-item-grid {
+  background-color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+
+  .book-item-header {
+    border-bottom: 1px solid var(--ion-color-light-shade);
+    padding: 0.5rem 1rem;
+    align-items: center;
+
+    ion-button {
+      float: right;
+    }
+  }
+}

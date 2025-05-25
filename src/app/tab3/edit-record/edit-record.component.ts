@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { IonModal, ModalController } from '@ionic/angular';
 
-import { IBookRecord, ISavedRecord } from 'src/app/shared/modals/interest-book';
+import { ISavedRecord } from 'src/app/shared/modals/interest-book';
 import { calculateInterestWithDates, calculateInterestWithDuration, IInterestResult } from 'src/app/utils';
 
 @Component({
@@ -22,8 +22,6 @@ export class EditRecordComponent implements OnInit {
   durationError: boolean;
   sameDateError: boolean;
   invalidDatesError: boolean;
-  borrowerName: string;
-  borrowerCtrlError: string;
 
   constructor(private modalCtrl: ModalController) {
   }
@@ -49,14 +47,19 @@ export class EditRecordComponent implements OnInit {
       }
     );
     this.onClickCalculate();
+    console.log(this.editRecord);
   }
 
   ionViewWillEnter() {
-    this.onClickCancel();
+    // this.onClickCancel();
   }
 
   createForm() {
     this.recordForm = new FormGroup({
+      name: new FormControl(this.editRecord.name, {
+        updateOn: 'blur',
+        validators: [Validators.required, Validators.maxLength(50), Validators.pattern(/^[A-Za-z]+(?: [A-Za-z]+)*$/)],
+      }),
       principal: new FormControl(this.editRecord.principalAmount, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.max(1000000000000)],
@@ -212,35 +215,22 @@ export class EditRecordComponent implements OnInit {
     return !this.durationError;
   }
 
-  async onClickSave(modal?: string) {
-    if (!modal) {
-      // this.saveRecordModal.present();
+  async onClickSave() {
+    if (!this.validateForm()) {
       return;
     }
-    this.borrowerCtrlError = null;
-    const regex = /^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$/;
-    if (!this.borrowerName || this.borrowerName.length === 0) {
-      this.borrowerCtrlError = 'Please enter borrower name';
-      return;
-    } else if (this.borrowerName.length > 50) {
-      this.borrowerCtrlError = 'Name cannot be more than 50 characters';
-      return;
-    } else if (!regex.test(this.borrowerName)) {
-      this.borrowerCtrlError =
-        'Invalid name. Name can only contain alphabets, numbers and space';
-      return;
-    }
-    let data: IBookRecord = {
-      id: new Date().getTime(),
-      name: this.borrowerName,
-      type: 'saved',
-      mobileNumber: null,
+    let data: ISavedRecord = {
+      id: this.editRecord.id,
+      name: this.formValue.name,
+      type: this.editRecord.type,
+      mobileNumber: this.editRecord.mobileNumber,
       interestType: this.formValue.interestType,
       interestRate: this.formValue.interestRate,
       principalAmount: this.formValue.principal,
       calculationType: this.formValue.calculationType,
       compoundFrequency: this.formValue.interval,
-      notes: null,
+      notes: this.editRecord.notes,
+      tenureType: this.formValue.tenureType,
     };
     if (this.formValue.tenureType === 'dates') {
       data = {
@@ -256,6 +246,6 @@ export class EditRecordComponent implements OnInit {
         days: this.formValue.days,
       };
     }
-    // await this.storageService.updateRecord(data);
+    await this.modalCtrl.dismiss({ updatedRecord: data });
   }
 }

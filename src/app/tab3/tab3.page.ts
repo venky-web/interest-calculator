@@ -8,10 +8,11 @@ import {
   ModalController,
 } from '@ionic/angular';
 
-import { IBookRecord } from '../shared/modals/interest-book';
+import { ISavedRecord } from '../shared/modals/interest-book';
 import { StorageService } from '../shared/services/storage.service';
 import { MenuOptionsComponent } from '../tab2/menu-options/menu-options.component';
 import { EditRecordComponent } from './edit-record/edit-record.component';
+import { calculateInterestWithDates, calculateInterestWithDuration } from '../utils';
 
 @Component({
   selector: 'app-tab3',
@@ -23,7 +24,8 @@ export class Tab3Page {
   //
   savedRecordsSub: Subscription;
 
-  savedRecords: IBookRecord[];
+  savedRecords: ISavedRecord[];
+  searchText: string;
 
   constructor(
     private popOverCtrl: PopoverController,
@@ -36,8 +38,8 @@ export class Tab3Page {
   ionViewWillEnter() {
     this.savedRecordsSub = this.storageService.savedRecords.subscribe(
       (records) => {
-        this.savedRecords = records.filter((x) => x.type === 'saved');
-        // this.calculateInterests(bookRecords);
+        const savedRecords = records.filter((x) => x.type === 'saved') as ISavedRecord[];
+        this.calculateInterests(savedRecords);
       }
     );
   }
@@ -46,8 +48,46 @@ export class Tab3Page {
     this.savedRecordsSub?.unsubscribe();
   }
 
+  calculateInterests(savedRecords: ISavedRecord[]) {
+    if (!savedRecords || savedRecords.length === 0) {
+      this.savedRecords = [];
+      return;
+    }
+    savedRecords.forEach((record: ISavedRecord) => {
+      let interestRate = record.interestRate;
+      if (record.interestType === 'rupees') {
+        interestRate = interestRate * 12;
+      }
+      let interestResult = null;
+      if (record.tenureType === 'dates') {
+        interestResult = calculateInterestWithDates({
+          principal: record.principalAmount,
+          rate: interestRate,
+          interestType: record.calculationType,
+          compoundFrequency: record.compoundFrequency,
+          startDate: new Date(record.fromDate),
+          endDate: new Date(record.toDate),
+        }, true);
+      } else {
+        interestResult = calculateInterestWithDuration({
+          principal: record.principalAmount,
+          rate: interestRate,
+          interestType: record.calculationType,
+          compoundFrequency: record.compoundFrequency,
+          years: record.years || 0,
+          months: record.months || 0,
+          days: record.days || 0,
+        }, true);
+      }
+      record.interestAmount = interestResult.interestBreakdown.interestTotal;
+      record.totalDue = interestResult.totalAmount;
+      record.duration = interestResult.duration.totalStr;
+    });
+    this.savedRecords = savedRecords;
+  }
+
   onSearchRecords(event: any) {
-    //
+    this.searchText = event.detail.value;
   }
 
   async onClickMenu(event: any, bookRecord: any) {
@@ -81,16 +121,12 @@ export class Tab3Page {
     if (!data) {
       return;
     }
-    // if (data?.formData) {
-    //   let record: IBookRecord = this.prepareBookRecord(
-    //     data.formData,
-    //     bookRecord
-    //   );
-    //   const result = await this.storageService.updateRecord(record);
-    //   this.storageService.updateSavedRecords(result);
-    //   this.showToast('Record saved successfully', 'success');
-    //   return;
-    // }
+    if (data?.updatedRecord) {
+      const result = await this.storageService.updateRecord(data.updatedRecord);
+      this.storageService.updateSavedRecords(result);
+      this.showToast('Record updated successfully', 'success');
+      return;
+    }
     this.showToast('Unable to edit record', 'danger', 'Please try again');
   }
 
@@ -119,7 +155,7 @@ export class Tab3Page {
     this.deleteRecord(bookRecord);
   }
 
-  async deleteRecord(bookRecord: IBookRecord) {
+  async deleteRecord(bookRecord: ISavedRecord) {
     const result = await this.storageService.deleteRecord(bookRecord.id);
     this.storageService.updateSavedRecords(result);
     const toast = await this.toastCtrl.create({
@@ -127,6 +163,7 @@ export class Tab3Page {
       position: 'top',
       color: 'success',
       duration: 3000,
+      positionAnchor: 'saved-records-header',
     });
     await toast.present();
   }
@@ -138,6 +175,7 @@ export class Tab3Page {
       position: 'top',
       color: type,
       duration: 2500,
+      positionAnchor: 'saved-records-header',
     });
     await toast.present();
   }
