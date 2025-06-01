@@ -112,15 +112,19 @@
 //   --ion-color-dark: #0D1B2A;
 // }
 
-ion-header {
-	padding-top: var(--ion-safe-area-bottom, 1rem);
-}
+// ion-header {
+// 	// padding-top: var(--ion-safe-area-bottom, 1rem);
+// }
 
 ion-content {
-  padding-top: var(--ion-safe-area-top, 1rem);
-  padding-bottom: var(--ion-safe-area-bottom, 1rem);
+  --padding-top: var(--ion-safe-area-top, 1rem);
+  --padding-bottom: var(--ion-safe-area-bottom, 4rem);
+  --scroll-padding-bottom: calc(var(--ion-safe-area-bottom) + 4rem);
+	--keyboard-offset: 1rem;
+	--offset-bottom: 1rem;
 }
 
-ion-tab-bar {
-  padding-bottom: var(--ion-safe-area-bottom, 1rem);
-}
+// ion-tab-bar {
+//   // padding-bottom: var(--ion-safe-area-bottom, 1rem);
+// 	// --background: var(--ion-color-primary);
+// }

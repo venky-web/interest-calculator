@@ -161,6 +161,7 @@
       <ion-button color="primary" (click)="onClickCalculate()">Calculate</ion-button>
     </div>
   </form>
+  <!-- <ng-template [ngTemplateOutlet]="adLogTemplate"></ng-template> -->
   <ng-container *ngIf="interestResult">
     <ng-template [ngTemplateOutlet]="interestResultTemplate"></ng-template>
   </ng-container>
@@ -237,3 +238,12 @@
     </section>
   </ng-template>
 </ion-modal>
+
+<ng-template #adLogTemplate>
+  <div class="ad-log-list">
+    <div *ngFor="let item of adLogs">
+      <span>{{ item.message }}</span>
+      <small>{{ item.timestamp }}</small>
+    </div>
+  </div>
+</ng-template>

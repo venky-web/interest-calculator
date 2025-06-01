@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { IonModal, ToastController } from '@ionic/angular';
+import { IonContent, IonModal, ToastController } from '@ionic/angular';
 import {
   calculateInterestWithDates,
   calculateInterestWithDuration,
@@ -21,6 +21,7 @@ import { environment } from 'src/environments/environment';
 export class Tab1Page implements OnInit {
   //
   @ViewChild('saveRecordModal') saveRecordModal!: IonModal;
+  @ViewChild(IonContent) ionContent!: IonContent;
 
   calculatorForm: FormGroup;
 
@@ -31,6 +32,9 @@ export class Tab1Page implements OnInit {
   invalidDatesError: boolean;
   borrowerName: string;
   borrowerCtrlError: string;
+
+  // Temporary
+  adLogs: any[] = [];
 
   constructor(private storageService: StorageService, private toastCtrl: ToastController, private admobService: AdmobService) {
     this.createForm();
@@ -55,6 +59,9 @@ export class Tab1Page implements OnInit {
         }
       }
     );
+    // this.admobService.adLogSub.subscribe((newLog) => {
+    //   this.adLogs.push(newLog);
+    // });
   }
 
   ionViewWillEnter() {
@@ -190,6 +197,7 @@ export class Tab1Page implements OnInit {
         days: this.formValue.days || 0,
       });
     }
+    this.scrollToBottom();
   }
 
   validateForm(): boolean {
@@ -283,5 +291,11 @@ export class Tab1Page implements OnInit {
      positionAnchor: 'interest-calculator-header',
    });
    await toast.present();
+  }
+
+  scrollToBottom() {
+    // Passing a duration to the method makes it so the scroll slowly
+    // goes to the bottom instead of instantly
+    this.ionContent?.scrollToBottom(500);
   }
 }

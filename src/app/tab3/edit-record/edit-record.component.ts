@@ -36,7 +36,7 @@ export class EditRecordComponent implements OnInit {
     this.recordForm.controls['calculationType'].valueChanges.subscribe(
       (value: string) => {
         if (value === 'compound') {
-          const ctrl = new FormControl('yearly', {
+          const ctrl = new FormControl(this.editRecord.compoundFrequency || 'yearly', {
             updateOn: 'blur',
             validators: [Validators.required],
           });
@@ -47,7 +47,6 @@ export class EditRecordComponent implements OnInit {
       }
     );
     this.onClickCalculate();
-    console.log(this.editRecord);
   }
 
   ionViewWillEnter() {
@@ -58,7 +57,7 @@ export class EditRecordComponent implements OnInit {
     this.recordForm = new FormGroup({
       name: new FormControl(this.editRecord.name, {
         updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(50), Validators.pattern(/^[A-Za-z]+(?: [A-Za-z]+)*$/)],
+        validators: [Validators.required, Validators.maxLength(50), Validators.pattern(/^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$/)],
       }),
       principal: new FormControl(this.editRecord.principalAmount, {
         updateOn: 'blur',
@@ -125,11 +124,11 @@ export class EditRecordComponent implements OnInit {
       this.recordForm.removeControl('years', { emitEvent: false });
       this.recordForm.removeControl('months', { emitEvent: false });
       this.recordForm.removeControl('days', { emitEvent: false });
-      this.recordForm.addControl('fromDate', new FormControl(null, {
+      this.recordForm.addControl('fromDate', new FormControl(this.editRecord.fromDate, {
         updateOn: 'blur',
         validators: [Validators.required],
       }));
-      this.recordForm.addControl('toDate', new FormControl(null, {
+      this.recordForm.addControl('toDate', new FormControl(this.editRecord.toDate, {
         updateOn: 'blur',
         validators: [Validators.required],
       }));
@@ -138,15 +137,15 @@ export class EditRecordComponent implements OnInit {
     if (value === 'duration' && !this.formCtrls['years']) {
       this.recordForm.removeControl('fromDate', { emitEvent: false });
       this.recordForm.removeControl('toDate', { emitEvent: false });
-      this.recordForm.addControl('years', new FormControl(null, {
+      this.recordForm.addControl('years', new FormControl(this.editRecord.years, {
         updateOn: 'change',
         validators: [Validators.maxLength(4), Validators.min(0)],
       }));
-      this.recordForm.addControl('months', new FormControl(null, {
+      this.recordForm.addControl('months', new FormControl(this.editRecord.months, {
         updateOn: 'change',
         validators: [Validators.maxLength(4), Validators.min(0)],
       }));
-      this.recordForm.addControl('days', new FormControl(null, {
+      this.recordForm.addControl('days', new FormControl(this.editRecord.days, {
         updateOn: 'change',
         validators: [Validators.maxLength(4), Validators.min(0)],
       }));

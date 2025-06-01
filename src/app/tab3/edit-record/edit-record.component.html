@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Add Record</ion-title>
+    <ion-title>Edit Receipt</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="onClickCancel()">
         <ion-icon name="close-outline" slot="icon-only"></ion-icon>
@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" [forceOverscroll]="true">
   <form [formGroup]="recordForm" class="ion-padding">
     <div class="ion-margin-bottom">
       <ion-label>Borrower Name</ion-label>
@@ -74,16 +74,16 @@
         <!-- From Date -->
         <div>
           <ion-label position="stacked">From Date</ion-label>
-          <ion-datetime-button datetime="fromDatePicker"></ion-datetime-button>
-          <ion-modal [keepContentsMounted]="true" #fromDateModal>
+          <ion-datetime-button id="tab3FromDatePickerBtn" datetime="tab3FromDatePicker"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true" #tab3FromDateModal>
             <ng-template>
               <ion-datetime
-                id="fromDatePicker"
+                id="tab3FromDatePicker"
                 name="fromDate"
                 formControlName="fromDate"
                 presentation="date"
                 display-format="DD/MM/YYYY"
-                (ionChange)="onDateChange(fromDateModal)"
+                (ionChange)="onDateChange(tab3FromDateModal)"
               ></ion-datetime>
             </ng-template>
           </ion-modal>
@@ -91,16 +91,16 @@
         <!-- To Date -->
         <div>
           <ion-label position="stacked">To Date</ion-label>
-          <ion-datetime-button datetime="toDatePicker"></ion-datetime-button>
-          <ion-modal [keepContentsMounted]="true" #toDateModal>
+          <ion-datetime-button id="tab3ToDatePickerBtn" datetime="tab3ToDatePicker"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true" #tab3ToDateModal>
             <ng-template>
               <ion-datetime
-                id="toDatePicker"
+                id="tab3ToDatePicker"
                 name="toDate"
                 formControlName="toDate"
                 presentation="date"
                 display-format="DD/MM/YYYY"
-                (ionChange)="onDateChange(toDateModal)"
+                (ionChange)="onDateChange(tab3ToDateModal)"
               ></ion-datetime>
             </ng-template>
           </ion-modal>

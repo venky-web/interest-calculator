@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true" [forceOverscroll]="true">
   <form [formGroup]="recordForm" class="ion-padding">
     <div class="ion-margin-bottom">
       <ion-radio-group name="recordType" formControlName="recordType">
@@ -107,16 +107,16 @@
       class="ion-margin-bottom d-flex justify-content-between align-items-center"
     >
       <label for="fromDate">From Date</label>
-      <ion-datetime-button datetime="fromDatePicker"></ion-datetime-button>
-      <ion-modal [keepContentsMounted]="true" #fromDateModal>
+      <ion-datetime-button datetime="tab2FromDatePicker"></ion-datetime-button>
+      <ion-modal [keepContentsMounted]="true" #tab2FromDateModal>
         <ng-template>
           <ion-datetime
-            id="fromDatePicker"
+            id="tab2FromDatePicker"
             name="fromDate"
             formControlName="fromDate"
             presentation="date"
             display-format="DD/MM/YYYY"
-            (ionChange)="onDateChange(fromDateModal)"
+            (ionChange)="onDateChange(tab2FromDateModal)"
           ></ion-datetime>
         </ng-template>
       </ion-modal>

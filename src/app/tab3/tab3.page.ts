@@ -131,16 +131,16 @@ export class Tab3Page {
     if (data?.updatedRecord) {
       const result = await this.storageService.updateRecord(data.updatedRecord);
       this.storageService.updateSavedRecords(result);
-      this.showToast('Record updated successfully', 'success');
+      this.showToast('Receipt updated successfully', 'success');
       return;
     }
-    this.showToast('Unable to edit record', 'danger', 'Please try again');
+    this.showToast('Unable to edit receipt', 'danger', 'Please try again');
   }
 
   async onClickDelete(bookRecord: any) {
     const alertEl = await this.alertCtrl.create({
-      header: 'Delete the record ?',
-      message: 'Record will be deleted permanently and cannot be restored.',
+      header: 'Delete the receipt ?',
+      message: 'Receipt will be deleted permanently and cannot be restored.',
       buttons: [
         {
           role: 'cancel',
@@ -166,7 +166,7 @@ export class Tab3Page {
     const result = await this.storageService.deleteRecord(bookRecord.id);
     this.storageService.updateSavedRecords(result);
     const toast = await this.toastCtrl.create({
-      header: 'Record deleted successfully',
+      header: 'Receipt deleted successfully',
       position: 'top',
       color: 'success',
       duration: 3000,

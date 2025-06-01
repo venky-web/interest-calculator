@@ -52,7 +52,7 @@ export class AddRecordComponent  implements OnInit {
       }),
       name: new FormControl(null, {
         updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(50), Validators.pattern(/^[A-Za-z]+(?: [A-Za-z]+)*$/)]
+        validators: [Validators.required, Validators.maxLength(50), Validators.pattern(/^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$/)]
       }),
       mobileNumber: new FormControl(null, {
         updateOn: 'blur',

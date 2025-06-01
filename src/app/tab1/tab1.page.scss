@@ -1,8 +1,3 @@
-ion-content {
-  --keyboard-offset: 1rem;
-  --offset-bottom: 1rem;
-}
-
 .box-shadow {
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
@@ -47,8 +42,7 @@ ion-radio {
 
 .interest-result {
   padding: 1rem;
-  margin: 1rem 1rem 3rem 1rem;
-  // border: 1px solid grey;
+  margin: 1rem 1rem 5rem 1rem;
   border-radius: 0.5rem;
 
   > div {
@@ -93,4 +87,11 @@ ion-modal#save-record-modal {
 .modal-header {
   background-color: var(--ion-color-primary);
   color: var(--ion-color-primary-contrast);
+}
+
+.ad-log-list > div {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid grey;
+  margin-bottom: 8px;
 }
