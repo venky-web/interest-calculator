@@ -161,8 +161,8 @@ export class Tab1Page implements OnInit {
       interestRate: 1,
       tenureType: 'dates',
       calculationType: 'simple',
-      fromDate: yesterday,
-      toDate: today,
+      fromDate: yesterday.toISOString(),
+      toDate: today.toISOString(),
     });
     this.interestResult = null;
     this.formValue = null;
