@@ -8,11 +8,18 @@ const config: CapacitorConfig = {
     // SafeArea: {
     //   enabled: true,
     //   customColorsForSystemBars: true,
-    //   statusBarColor: '#',
+    //   statusBarColor: '#94369b',
     //   statusBarContent: 'light',
-    //   navigationBarColor: '#00000000',
+    //   navigationBarColor: '#ffffff',
     //   navigationBarContent: 'light',
     // },
+    SplashScreen: {
+      launchShowDuration: 2000,
+      backgroundColor: "#ffffff",
+      showSpinner: false,
+      splashFullScreen: true,
+      splashImmersive: true,
+    },
   },
 };
 

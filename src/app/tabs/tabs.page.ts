@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Network } from '@capacitor/network';
-import { Platform, ToastController } from '@ionic/angular';
+// import { ToastController } from '@ionic/angular';
 
 import { AdmobService } from '../shared/services/admob.service';
 import { environment } from 'src/environments/environment';
@@ -19,10 +19,11 @@ export class TabsPage implements OnInit, OnDestroy {
   interstitialAdUnit: string;
   bannerAdUnit: string;
 
+  debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
   constructor(
     private admobService: AdmobService,
-    private toastCtrl: ToastController,
-    private platform: Platform,
+    // private toastCtrl: ToastController
   ) {
     this.interstitialAdUnit = 'ca-app-pub-3940256099942544/1033173712'; // Test Interstitial Ad Unit ID
     this.bannerAdUnit = 'ca-app-pub-3940256099942544/6300978111'; // Test Banner Ad Unit ID
@@ -47,8 +48,6 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-    const plaform = await this.platform.ready();
-    console.log(plaform);
     await this.initializeAdMob();
   }
 
@@ -65,7 +64,8 @@ export class TabsPage implements OnInit, OnDestroy {
     const timer = this.admobService.getInterstitialTimer();
     if (timer > 0) {
       // Preparing Interstitial
-      await this.admobService.prepareInterstitialAd(this.interstitialAdUnit);
+      // await this.admobService.prepareInterstitialAd(this.interstitialAdUnit);
+      this.prepareInterstitial(timer);
     }
     await this.toggleTimeout(timer);
   }
@@ -73,7 +73,7 @@ export class TabsPage implements OnInit, OnDestroy {
   async toggleTimeout(timer: number) {
     this.admobService.updateAdLog(`Toggle Timeout - ${timer}`);
     if (timer > 0) {
-      this.checkForInterstitial();
+      this.checkForInterstitial(timer);
       // Set Timeout
       this.adTimeout = setTimeout(async () => {
         // Hide Banner Ad
@@ -83,7 +83,7 @@ export class TabsPage implements OnInit, OnDestroy {
         await this.admobService.showInterstitialAd();
 
         // Resume Banner Ad
-        await this.admobService.resumeBannerAd();
+        await this.admobService.resumeBannerAd('toggleTimeout');
 
         // Get Next Timer
         timer = this.admobService.getInterstitialTimer();
@@ -96,15 +96,33 @@ export class TabsPage implements OnInit, OnDestroy {
     }
   }
 
-  checkForInterstitial() {
+  checkForInterstitial(interstitialTimer: number) {
     // Prepare Interstitial if not prepared
     if (!this.admobService.isInterstitialPrepared) {
       setTimeout(() => {
         if (!this.admobService.isInterstitialPrepared) {
-          this.admobService.prepareInterstitialAd(this.interstitialAdUnit);
+          // await this.admobService.prepareInterstitialAd(this.interstitialAdUnit);
+          this.prepareInterstitial(interstitialTimer);
         }
       }, 15 * 1000);
     }
+  }
+
+  prepareInterstitial(debounceDelay = 1000) {
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+    }
+
+    if (debounceDelay > 2 * 60 * 1000) { // 2 minutes
+      debounceDelay = debounceDelay - (1 * 60 * 1000); // Total time - 1 minute
+    } else {
+      debounceDelay = 30 * 1000; // 30 seconds
+    }
+    
+    this.debounceTimer = setTimeout(() => {
+      // Call prepareInterstitial after a delay
+      this.admobService.prepareInterstitialAd(this.interstitialAdUnit);
+    }, debounceDelay);
   }
 
   async showAds() {
@@ -124,12 +142,12 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   async showToast(message: string, color: string) {
-    const toast = await this.toastCtrl.create({
-      message: message,
-      color: color,
-      position: 'top',
-      duration: 2000,
-    });
-    await toast.present();
+    // const toast = await this.toastCtrl.create({
+    //   message: message,
+    //   color: color,
+    //   position: 'top',
+    //   duration: 2000,
+    // });
+    // await toast.present();
   }
 }

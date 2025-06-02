@@ -271,6 +271,7 @@ export class Tab1Page implements OnInit {
     this.storageService.updateSavedRecords(result);
     await this.showToast('Record saved successfully', 'success');
     this.onClickCancel();
+    this.ionContent?.scrollToTop(500);
   }
 
   cancel() {

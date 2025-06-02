@@ -24,7 +24,7 @@ export class AppComponent implements OnDestroy {
   isShowAdsCalled: boolean;
 
   debounceTimer: ReturnType<typeof setTimeout> | null = null;
-  debounceDelay = 2000; // Delay in milliseconds
+  debounceDelay = 5 * 1000; // Delay in milliseconds
 
   constructor(
     private platform: Platform,
@@ -113,7 +113,7 @@ export class AppComponent implements OnDestroy {
 
   resumeAd(caller?: string) {
     if (this.admobService.isAdmobInitialized && this.admobService.isBannerAdPrepared) {
-      console.log('Resume Ad', caller);
+      // console.log('Resume Ad', caller);
       if (this.debounceTimer) {
         clearTimeout(this.debounceTimer);
       }
@@ -127,7 +127,7 @@ export class AppComponent implements OnDestroy {
 
   pauseAd(caller?: string) {
     if (this.admobService.isAdmobInitialized && this.admobService.isBannerAdPrepared) {
-      console.log('Pause Ad', caller);
+      // console.log('Pause Ad', caller);
       this.admobService.hideBannerAd();
     }
   }

@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { IonModal, ModalController } from '@ionic/angular';
+import { IonContent, IonModal, ModalController } from '@ionic/angular';
 
 import { ISavedRecord } from 'src/app/shared/modals/interest-book';
 import { calculateInterestWithDates, calculateInterestWithDuration, IInterestResult } from 'src/app/utils';
@@ -14,6 +14,8 @@ import { calculateInterestWithDates, calculateInterestWithDuration, IInterestRes
 export class EditRecordComponent implements OnInit {
   //
   @Input() editRecord: ISavedRecord;
+
+  @ViewChild('ionContent') ionContent?: IonContent;
 
   recordForm: FormGroup;
 
@@ -190,6 +192,7 @@ export class EditRecordComponent implements OnInit {
         days: this.formValue.days || 0,
       });
     }
+    this.scrollToBottom();
   }
 
   validateForm(): boolean {
@@ -246,5 +249,11 @@ export class EditRecordComponent implements OnInit {
       };
     }
     await this.modalCtrl.dismiss({ updatedRecord: data });
+  }
+
+  scrollToBottom() {
+    // Passing a duration to the method makes it so the scroll slowly
+    // goes to the bottom instead of instantly
+    this.ionContent?.scrollToBottom(500);
   }
 }

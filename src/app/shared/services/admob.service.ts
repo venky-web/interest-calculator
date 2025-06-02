@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ToastController } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
+
+import { ToastController } from '@ionic/angular';
+import { Network } from '@capacitor/network';
 import {
   AdMob,
   BannerAdOptions,
@@ -45,6 +47,10 @@ export class AdmobService {
 
   async initializeAdMob(part?: string) {
     this.updateAdLog(`Initializing Admob - ${part}`);
+    const status = await Network.getStatus();
+    if (!status.connected) {
+      return;
+    }
     await AdMob.initialize();
     // this.updateAdLog(`preparing consent form - ${part}`);
     // const consentInfo = await AdMob.requestConsentInfo({
@@ -85,6 +91,11 @@ export class AdmobService {
   }
 
   async showBannerAd(adUnitId: string) {
+    const status = await Network.getStatus();
+    if (!status.connected) {
+      return;
+    }
+
     if (!this._isAdmobInitialized) {
       await this.initializeAdMob('showBannerAd');
     }
@@ -98,7 +109,7 @@ export class AdmobService {
       adId: this.bannerAdUnit,
       adSize: BannerAdSize.ADAPTIVE_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
-      margin: this.bannerMarginBottom,
+      margin: this.bannerMarginBottom && this.bannerMarginBottom < 85 ? this.bannerMarginBottom : 75,
       isTesting: true,
     };
 
@@ -134,7 +145,7 @@ export class AdmobService {
   private setupAdListeners() {
     // Interstitial Ad Listeners
     AdMob.addListener(InterstitialAdPluginEvents.Dismissed, () => {
-      this.prepareInterstitialAd(this.interstitialAdUnit); // Preload the next ad
+      // this.prepareInterstitialAd(this.interstitialAdUnit); // Preload the next ad
     });
 
     // Banner Ad Listeners
@@ -176,6 +187,11 @@ export class AdmobService {
       return;
     }
 
+    const status = await Network.getStatus();
+    if (!status.connected) {
+      return;
+    }
+
     if (!this._isAdmobInitialized) {
       await this.initializeAdMob('prepareInterstitialAd');
     }
@@ -199,6 +215,12 @@ export class AdmobService {
     if (!this._isInterstitialPrepared || this.lastAdDisplayCount >= this.MAX_ADS_PER_DAY) {
       return;
     }
+
+    const status = await Network.getStatus();
+    if (!status.connected) {
+      return;
+    }
+
     try {
       await AdMob.showInterstitial();
       this.incrementAdDisplayCount();
@@ -223,11 +245,13 @@ export class AdmobService {
     const lastAdDisplayDate = localStorage.getItem('lastAdDisplayDate');
     if (!lastAdDisplayDate || lastAdDisplayDate !== new Date().toLocaleDateString()) {
       localStorage.setItem('lastAdDisplayCount', '0');
+      localStorage.setItem('lastAdDisplayDate', new Date().toLocaleDateString());
       return 0;
     }
     const lastAdDisplayCount = Number(localStorage.getItem('lastAdDisplayCount'));
     if (!lastAdDisplayCount) {
       localStorage.setItem('lastAdDisplayCount', '0');
+      localStorage.setItem('lastAdDisplayDate', new Date().toLocaleDateString());
       return 0;
     }
     return lastAdDisplayCount;
@@ -238,12 +262,12 @@ export class AdmobService {
   }
 
   private async showToast(header: string, color: string) {
-    const toast = await this.toastCtrl.create({
-      header: header,
-      position: 'top',
-      color: color || 'primary',
-      duration: 3000,
-    });
-    await toast.present();
+    // const toast = await this.toastCtrl.create({
+    //   header: header,
+    //   position: 'top',
+    //   color: color || 'primary',
+    //   duration: 3000,
+    // });
+    // await toast.present();
   }
 }

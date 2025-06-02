@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" [forceOverscroll]="true">
+<ion-content #ionContent [fullscreen]="true" [forceOverscroll]="true">
   <form [formGroup]="recordForm" class="ion-padding">
     <div class="ion-margin-bottom">
       <ion-label>Borrower Name</ion-label>
@@ -73,7 +73,7 @@
       <div class="ion-margin-bottom date-ctrl-section">
         <!-- From Date -->
         <div>
-          <ion-label position="stacked">From Date</ion-label>
+          <label for="fromDate">From Date</label>
           <ion-datetime-button id="tab3FromDatePickerBtn" datetime="tab3FromDatePicker"></ion-datetime-button>
           <ion-modal [keepContentsMounted]="true" #tab3FromDateModal>
             <ng-template>
@@ -90,7 +90,7 @@
         </div>
         <!-- To Date -->
         <div>
-          <ion-label position="stacked">To Date</ion-label>
+          <label for="toDate">To Date</label>
           <ion-datetime-button id="tab3ToDatePickerBtn" datetime="tab3ToDatePicker"></ion-datetime-button>
           <ion-modal [keepContentsMounted]="true" #tab3ToDateModal>
             <ng-template>
