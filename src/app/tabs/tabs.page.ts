@@ -5,6 +5,8 @@ import { Network } from '@capacitor/network';
 
 import { AdmobService } from '../shared/services/admob.service';
 import { environment } from 'src/environments/environment';
+import { Device } from '@capacitor/device';
+import { SafeArea } from 'capacitor-plugin-safe-area';
 
 @Component({
   selector: 'app-tabs',
@@ -25,11 +27,9 @@ export class TabsPage implements OnInit, OnDestroy {
     private admobService: AdmobService,
     // private toastCtrl: ToastController
   ) {
-    this.interstitialAdUnit = 'ca-app-pub-3940256099942544/1033173712'; // Test Interstitial Ad Unit ID
-    this.bannerAdUnit = 'ca-app-pub-3940256099942544/6300978111'; // Test Banner Ad Unit ID
-    // Enable for deployment
-    // this.interstitialAdUnit = environment.interestCalInterstitialAdUnitId; // Live Interstitial Ad Unit ID
-    // this.bannerAdUnit = environment.interestCalBannerAdUnitId; // Live Banner Ad Unit ID
+    this.getDeviceData();
+    this.interstitialAdUnit = environment.interestCalInterstitialAdUnitId;
+    this.bannerAdUnit = environment.interestCalBannerAdUnitId;
   }
 
   ngOnInit(): void {
@@ -138,6 +138,26 @@ export class TabsPage implements OnInit, OnDestroy {
   clearAdTimer() {
     if (this.adTimeout) {
       clearTimeout(this.adTimeout);
+    }
+  }
+
+  async getDeviceData() {
+    const {androidSDKVersion, operatingSystem} = await Device.getInfo();
+    // const batteryInfo = await Device.getBatteryInfo();
+    if (!androidSDKVersion) {
+      return;
+    }
+    this.admobService.androidSDKVersion = androidSDKVersion;
+    this.admobService.operatingSystem = operatingSystem;
+    if (androidSDKVersion < 35) {
+      const { insets } = await SafeArea.getSafeAreaInsets();
+      const ionHeaders = document.getElementsByTagName('ion-header') as unknown as any[];
+      if (ionHeaders) {
+        const paddingTop = insets.top > 0 ? `${insets.top}px` : '24px';
+        ionHeaders.forEach(element => {
+          element.style.setProperty('padding-top', paddingTop);
+        });
+      }
     }
   }
 

@@ -19,6 +19,8 @@ import {
 export class AdmobService {
   //
   bannerMarginBottom: number = 60;
+  androidSDKVersion: number;
+  operatingSystem: string;
 
   private _isAdmobInitialized: boolean = false;
   private _isBannerPrepared: boolean = false;
@@ -109,7 +111,8 @@ export class AdmobService {
       adId: this.bannerAdUnit,
       adSize: BannerAdSize.ADAPTIVE_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
-      margin: this.bannerMarginBottom && this.bannerMarginBottom < 85 ? this.bannerMarginBottom : 75,
+      margin: this.bannerMarginBottom,
+      // margin: this.bannerMarginBottom && this.bannerMarginBottom < 85 ? this.bannerMarginBottom : 75,
       isTesting: true,
     };
 

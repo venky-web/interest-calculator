@@ -6,7 +6,7 @@ import { SafeArea } from 'capacitor-plugin-safe-area';
 import { ScreenOrientation, ScreenOrientationResult } from '@capacitor/screen-orientation';
 import { Network } from '@capacitor/network';
 import { Capacitor } from '@capacitor/core';
-import { EdgeToEdge } from '@capawesome/capacitor-android-edge-to-edge-support';
+// import { EdgeToEdge } from '@capawesome/capacitor-android-edge-to-edge-support';
 import { StatusBar, Style } from '@capacitor/status-bar';
 
 import { AdmobService } from './shared/services/admob.service';
@@ -35,9 +35,10 @@ export class AppComponent implements OnDestroy {
   ) {
     this.platform.ready().then(async () => {
       if (Capacitor.getPlatform() === 'android') {
-        EdgeToEdge.enable();
-        EdgeToEdge.setBackgroundColor({ color: '#fff' });
-        StatusBar.setStyle({ style: Style.Default });
+        // await EdgeToEdge.enable();
+        // EdgeToEdge.setBackgroundColor({ color: '#fff' });
+        // await StatusBar.setStyle({ style: Style.Light });
+        // await StatusBar.setBackgroundColor({ color: '#94369b' });
       }
       this.checkSafeArea();
       this.addEventListeners();
@@ -47,6 +48,20 @@ export class AppComponent implements OnDestroy {
   async checkSafeArea() {
     const { insets } = await SafeArea.getSafeAreaInsets();
     this.admobService.bannerMarginBottom = insets.bottom + 60;
+    // document.documentElement.style.setProperty('--safe-area-inset-top', `${insets.top}px`);
+    // document.documentElement.style.setProperty('--safe-area-inset-bottom', `${insets.bottom}px`);
+    // document.documentElement.style.setProperty('--safe-area-inset-left', `${insets.left}px`);
+    // document.documentElement.style.setProperty('--safe-area-inset-right', `${insets.right}px`);
+    // console.log(document.querySelectorAll('ion-header'));
+
+    // document.querySelector('ion-header')?.style.setProperty('padding-top', `${insets.top}px`);
+    // document.querySelector('ion-header')?.style.setProperty('background-color', `var(--ion-color-dark)`);
+    // const alert = await this.alertCtrl.create({
+    //   header: 'Safe Area',
+    //   message: JSON.stringify(insets),
+    //   buttons: ['OK'],
+    // });
+    // await alert.present();
   }
 
   addEventListeners() {
@@ -140,6 +155,6 @@ export class AppComponent implements OnDestroy {
     ScreenOrientation?.removeAllListeners();
     SafeArea?.removeAllListeners();
     Network?.removeAllListeners();
-    EdgeToEdge?.disable();
+    // EdgeToEdge?.disable();
   }
 }

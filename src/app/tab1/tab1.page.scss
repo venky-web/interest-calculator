@@ -1,3 +1,7 @@
+.extra-space {
+  margin-bottom: 7rem;
+}
+
 .box-shadow {
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
@@ -42,7 +46,8 @@ ion-radio {
 
 .interest-result {
   padding: 1rem;
-  margin: 1rem 1rem 5rem 1rem;
+  // margin: 1rem 1rem 5rem 1rem;
+  margin: 1rem;
   border-radius: 0.5rem;
 
   > div {
@@ -94,4 +99,8 @@ ion-modal#save-record-modal {
   flex-direction: column;
   border-bottom: 1px solid grey;
   margin-bottom: 8px;
+}
+
+ion-content {
+  margin-bottom: 4rem !important;
 }

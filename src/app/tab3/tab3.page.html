@@ -4,9 +4,14 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding" color="light" [fullscreen]="true" [forceOverscroll]="true">
+<ion-content
+  class="ion-padding"
+  color="light"
+  [fullscreen]="true"
+  [forceOverscroll]="true"
+>
   <ion-grid
-    class="main-grid ion-margin-bottom"
+    class="main-grid"
     [fixed]="true"
     size-md="12"
     size-lg="8"
@@ -23,7 +28,9 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ng-container *ngFor="let item of savedRecords | searchRecord: searchText">
+      <ng-container
+        *ngFor="let item of savedRecords | searchRecord: searchText"
+      >
         <ion-col class="book-records" size="12" size-md="6">
           <ng-container
             *ngTemplateOutlet="savedRecordTemplate; context:  {$implicit: item}"
@@ -67,7 +74,9 @@
           <span class="item-title">From Date</span>
         </ion-col>
         <ion-col size="6" class="item-col">
-          <span class="item-value">{{ data?.fromDate | date: 'dd/MM/yyyy'}}</span>
+          <span class="item-value"
+            >{{ data?.fromDate | date: 'dd/MM/yyyy'}}</span
+          >
         </ion-col>
       </ion-row>
       <ion-row>
@@ -95,7 +104,10 @@
         <span class="item-title">Interest Rate</span>
       </ion-col>
       <ion-col size="6" class="item-col">
-        <span class="item-value">{{ data?.interestType === 'rupees' ?  '₹' + data?.interestRate : data?.interestRate + ' %' }}</span>
+        <span class="item-value"
+          >{{ data?.interestType === 'rupees' ? '₹' + data?.interestRate :
+          data?.interestRate + ' %' }}</span
+        >
       </ion-col>
     </ion-row>
     <ion-row>
