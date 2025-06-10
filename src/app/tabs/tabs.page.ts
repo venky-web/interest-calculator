@@ -48,6 +48,8 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
+    await this.checkSafeArea();
+    this.checkIonHeaderHeight();
     await this.initializeAdMob();
   }
 
@@ -149,16 +151,31 @@ export class TabsPage implements OnInit, OnDestroy {
     }
     this.admobService.androidSDKVersion = androidSDKVersion;
     this.admobService.operatingSystem = operatingSystem;
-    if (androidSDKVersion < 35) {
-      const { insets } = await SafeArea.getSafeAreaInsets();
-      const ionHeaders = document.getElementsByTagName('ion-header') as unknown as any[];
-      if (ionHeaders) {
-        const paddingTop = insets.top > 0 ? `${insets.top}px` : '24px';
-        ionHeaders.forEach(element => {
-          element.style.setProperty('padding-top', paddingTop);
-        });
+  }
+
+  async checkSafeArea() {
+    const { insets } = await SafeArea.getSafeAreaInsets();
+    if (this.admobService.androidSDKVersion < 35) {
+      this.admobService.bannerMarginBottom = 60;
+    } else {
+      this.admobService.bannerMarginBottom = insets.bottom + 60;
+    }
+    this.admobService.updateSafeAreaInsets(insets);
+  }
+
+  checkIonHeaderHeight() {
+    const paddingTop = this.admobService.safeAreaInsets.top > 0 ? `${this.admobService.safeAreaInsets.top}px` : '24px';
+    const ionHeader = document.getElementsByTagName('ion-header') as HTMLCollectionOf<HTMLElement>;
+    if (ionHeader) {
+      const elementPadding = ionHeader[0].style.getPropertyValue('padding-top');
+      if (!elementPadding) {
+        ionHeader[0].style.setProperty('padding-top', paddingTop);
       }
     }
+  }
+
+  ionTabsWillChange(e: any) {
+    console.log(e);
   }
 
   async showToast(message: string, color: string) {

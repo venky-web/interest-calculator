@@ -26,6 +26,12 @@ export class AdmobService {
   private _isBannerPrepared: boolean = false;
   private _isBannerHidden: boolean = false;
   private _isInterstitialPrepared: boolean = false;
+  private _safeAreaInsets: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  };
 
   private adFailedTimes = 0;
   private lastAdDisplayCount = 0;
@@ -41,9 +47,7 @@ export class AdmobService {
 
   private adLogs$ = new BehaviorSubject<any>([]);
 
-  constructor(
-    private toastCtrl: ToastController,
-  ) {
+  constructor(private toastCtrl: ToastController) {
     // this.initializeAdMob();
   }
 
@@ -88,8 +92,24 @@ export class AdmobService {
     return this.adLogs$.asObservable();
   }
 
+  get safeAreaInsets() {
+    return this._safeAreaInsets;
+  }
+
   updateAdLog(message: string) {
-    // this.adLogs$.next({ message: message, timestamp: new Date().toLocaleString() });
+    this.adLogs$.next({
+      message: message,
+      timestamp: new Date().toLocaleString(),
+    });
+  }
+
+  updateSafeAreaInsets(insets: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  }) {
+    this._safeAreaInsets = insets;
   }
 
   async showBannerAd(adUnitId: string) {
@@ -112,7 +132,6 @@ export class AdmobService {
       adSize: BannerAdSize.ADAPTIVE_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
       margin: this.bannerMarginBottom,
-      // margin: this.bannerMarginBottom && this.bannerMarginBottom < 85 ? this.bannerMarginBottom : 75,
       isTesting: true,
     };
 
@@ -182,11 +201,15 @@ export class AdmobService {
       }
       return this.FIRST_AD_DELAY_MS;
     }
-    return this.GAP_BETWEEN_ADS_MS * (this.lastAdDisplayCount  + 1);
+    return this.GAP_BETWEEN_ADS_MS * (this.lastAdDisplayCount + 1);
   }
 
   async prepareInterstitialAd(adUnitId: string) {
-    if (!adUnitId || this._isInterstitialPrepared || this.lastAdDisplayCount >= this.MAX_ADS_PER_DAY) {
+    if (
+      !adUnitId ||
+      this._isInterstitialPrepared ||
+      this.lastAdDisplayCount >= this.MAX_ADS_PER_DAY
+    ) {
       return;
     }
 
@@ -194,12 +217,12 @@ export class AdmobService {
     if (!status.connected) {
       return;
     }
-
+    this.interstitialAdUnit = adUnitId;
     if (!this._isAdmobInitialized) {
       await this.initializeAdMob('prepareInterstitialAd');
     }
     const options: AdOptions = {
-      adId: adUnitId,
+      adId: this.interstitialAdUnit,
       isTesting: true, // Set to false in production
     };
 
@@ -215,7 +238,10 @@ export class AdmobService {
   }
 
   async showInterstitialAd() {
-    if (!this._isInterstitialPrepared || this.lastAdDisplayCount >= this.MAX_ADS_PER_DAY) {
+    if (
+      !this._isInterstitialPrepared ||
+      this.lastAdDisplayCount >= this.MAX_ADS_PER_DAY
+    ) {
       return;
     }
 
@@ -239,22 +265,38 @@ export class AdmobService {
   // Helper functions
   private async incrementAdDisplayCount() {
     this.lastAdDisplayCount += 1;
-    localStorage.setItem('lastAdDisplayCount', this.lastAdDisplayCount.toString());
+    localStorage.setItem(
+      'lastAdDisplayCount',
+      this.lastAdDisplayCount.toString()
+    );
     localStorage.setItem('lastAdDisplayDate', new Date().toLocaleDateString());
-    this.updateAdLog(`Ad Display Count Incremented to ${this.lastAdDisplayCount}`);
+    this.updateAdLog(
+      `Ad Display Count Incremented to ${this.lastAdDisplayCount}`
+    );
   }
 
   private getLastAdDisplayCount(): number {
     const lastAdDisplayDate = localStorage.getItem('lastAdDisplayDate');
-    if (!lastAdDisplayDate || lastAdDisplayDate !== new Date().toLocaleDateString()) {
+    if (
+      !lastAdDisplayDate ||
+      lastAdDisplayDate !== new Date().toLocaleDateString()
+    ) {
       localStorage.setItem('lastAdDisplayCount', '0');
-      localStorage.setItem('lastAdDisplayDate', new Date().toLocaleDateString());
+      localStorage.setItem(
+        'lastAdDisplayDate',
+        new Date().toLocaleDateString()
+      );
       return 0;
     }
-    const lastAdDisplayCount = Number(localStorage.getItem('lastAdDisplayCount'));
+    const lastAdDisplayCount = Number(
+      localStorage.getItem('lastAdDisplayCount')
+    );
     if (!lastAdDisplayCount) {
       localStorage.setItem('lastAdDisplayCount', '0');
-      localStorage.setItem('lastAdDisplayDate', new Date().toLocaleDateString());
+      localStorage.setItem(
+        'lastAdDisplayDate',
+        new Date().toLocaleDateString()
+      );
       return 0;
     }
     return lastAdDisplayCount;

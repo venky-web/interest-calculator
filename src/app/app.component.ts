@@ -40,7 +40,7 @@ export class AppComponent implements OnDestroy {
         // await StatusBar.setStyle({ style: Style.Light });
         // await StatusBar.setBackgroundColor({ color: '#94369b' });
       }
-      this.checkSafeArea();
+      // this.checkSafeArea();
       this.addEventListeners();
     });
   }
