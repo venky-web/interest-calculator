@@ -12,6 +12,7 @@ import {
   InterstitialAdPluginEvents,
   AdOptions,
 } from '@capacitor-community/admob';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -132,7 +133,7 @@ export class AdmobService {
       adSize: BannerAdSize.ADAPTIVE_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
       margin: this.bannerMarginBottom,
-      isTesting: true,
+      isTesting: environment.showTestAds || true, // Set to false in production
     };
 
     await AdMob.showBanner(options);
@@ -223,7 +224,7 @@ export class AdmobService {
     }
     const options: AdOptions = {
       adId: this.interstitialAdUnit,
-      isTesting: true, // Set to false in production
+      isTesting: environment.showTestAds || true, // Set to false in production
     };
 
     try {
