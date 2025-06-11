@@ -49,7 +49,6 @@ export class TabsPage implements OnInit, OnDestroy {
 
   async ionViewWillEnter() {
     await this.checkSafeArea();
-    this.checkIonHeaderHeight();
     await this.initializeAdMob();
   }
 
@@ -161,6 +160,9 @@ export class TabsPage implements OnInit, OnDestroy {
       this.admobService.bannerMarginBottom = insets.bottom + 60;
     }
     this.admobService.updateSafeAreaInsets(insets);
+    if (this.admobService.androidSDKVersion < 35) {
+      this.checkIonHeaderHeight();
+    }
   }
 
   checkIonHeaderHeight() {
@@ -169,13 +171,17 @@ export class TabsPage implements OnInit, OnDestroy {
     if (ionHeader) {
       const elementPadding = ionHeader[0].style.getPropertyValue('padding-top');
       if (!elementPadding) {
-        ionHeader[0].style.setProperty('padding-top', paddingTop);
+        // ionHeader[0].style.setProperty('padding-top', paddingTop);
+        // Get the root element
+        document.documentElement.style.setProperty("--app-safe-area-top", paddingTop);
       }
     }
   }
 
   ionTabsWillChange(e: any) {
-    console.log(e);
+    // if (this.admobService.androidSDKVersion && this.admobService.androidSDKVersion < 35) {
+    //   this.checkIonHeaderHeight();
+    // }
   }
 
   async showToast(message: string, color: string) {

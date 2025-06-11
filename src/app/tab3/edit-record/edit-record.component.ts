@@ -7,9 +7,10 @@ import { ISavedRecord } from 'src/app/shared/modals/interest-book';
 import { calculateInterestWithDates, calculateInterestWithDuration, IInterestResult } from 'src/app/utils';
 
 @Component({
-  selector: 'app-edit-record',
-  templateUrl: './edit-record.component.html',
-  styleUrls: ['./edit-record.component.scss'],
+    selector: 'app-edit-record',
+    templateUrl: './edit-record.component.html',
+    styleUrls: ['./edit-record.component.scss'],
+    standalone: false
 })
 export class EditRecordComponent implements OnInit {
   //

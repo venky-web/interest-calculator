@@ -6,9 +6,10 @@ import { IonModal, ModalController } from '@ionic/angular';
 import { IBookRecord } from 'src/app/shared/modals/interest-book';
 
 @Component({
-  selector: 'app-add-record',
-  templateUrl: './add-record.component.html',
-  styleUrls: ['./add-record.component.scss'],
+    selector: 'app-add-record',
+    templateUrl: './add-record.component.html',
+    styleUrls: ['./add-record.component.scss'],
+    standalone: false
 })
 export class AddRecordComponent  implements OnInit {
   //

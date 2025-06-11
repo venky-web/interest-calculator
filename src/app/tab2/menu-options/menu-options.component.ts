@@ -4,8 +4,8 @@ import { Component } from '@angular/core';
 import { IonicModule, PopoverController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-menu-options',
-  template: `
+    selector: 'app-menu-options',
+    template: `
     <ion-list lines="full">
       <ion-item button (click)="selectOption('edit')">
         <ion-icon name="create-outline" slot="start" color="primary"></ion-icon>
@@ -21,20 +21,19 @@ import { IonicModule, PopoverController } from '@ionic/angular';
       </ion-item>
     </ion-list>
   `,
-  styles: [
-    `
+    styles: [
+        `
       ion-item {
         ion-icon {
           margin-right: 1rem;
         }
       }
     `
-  ],
-  standalone: true,
-   imports: [
-    IonicModule,
-    CommonModule,
-  ],
+    ],
+    imports: [
+        IonicModule,
+        CommonModule,
+    ]
 })
 export class MenuOptionsComponent {
 

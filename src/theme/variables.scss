@@ -112,9 +112,10 @@
 //   --ion-color-dark: #0D1B2A;
 // }
 
-// ion-header {
-// 	padding-top: env(--ion-safe-area-top);
-// }
+ion-header {
+	// padding-top: env(--ion-safe-area-top);
+	padding-top: var(--app-safe-area-top);
+}
 
 ion-content {
   // --padding-top: env(--ion-safe-area-top, 1rem);
